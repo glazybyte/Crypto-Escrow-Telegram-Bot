@@ -52,16 +52,20 @@ def send_transaction(hex_private_key, recipient_address, sol_amount_str, log_fil
         log_message(error_message, log_file)
 
 
-def simple_sol_to_sol_transaction(tradeId, bot_state: GlobalState):
-    tradeDetails = bot_state.get_var(tradeId)
-    walletDetails = bot_state.get_wallet_info(tradeId=tradeId)
+def simple_sol_to_sol_transaction(action_id, bot_state: GlobalState):
+    tradeDetails = {}
+    if action_id.startswith('TRADE'):
+        tradeDetails = bot_state.get_var(action_id)
+    elif action_id.startswith('TXID'):
+        tradeDetails = bot_state.get_tx_var(action_id)
+    walletDetails = bot_state.get_wallet_info(action_id)
 
     log_file = tradeDetails['ourAddress']
     hex_private_key = walletDetails['secretKey']
     recipient_address = tradeDetails['sellerAddress']
     amount_to_send = tradeDetails["tradeAmount"] 
 
-    log_message(f"Initiating transaction for Trade ID: {tradeId}", log_file)
+    log_message(f"Initiating transaction for Trade ID: {action_id}", log_file)
     log_message(f"Sender: {walletDetails['publicKey']}, Recipient: {recipient_address}, Amount: {amount_to_send} USDT", log_file)
 
     response = send_transaction(hex_private_key, recipient_address, amount_to_send, log_file)

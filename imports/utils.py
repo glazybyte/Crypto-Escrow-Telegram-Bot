@@ -1,5 +1,6 @@
 import re
 from decimal import Decimal, InvalidOperation
+from concurrent.futures import ThreadPoolExecutor
 from telegram.ext import CallbackContext
 from telegram.error import BadRequest
 from solathon import PublicKey
@@ -21,15 +22,17 @@ def log_message(message, log_file="error_log", mainThread=False):
     with open(log_file, 'a') as f:
         f.write(message + '\n')
 
-def validate_text(input_text):
+def validate_text(input_text, extra = []):
     allowed_pattern = r'^[a-zA-Z0-9 ,\-$@.]+$'
     if re.match(allowed_pattern, input_text):
         return True
     else:
         for char in input_text:
             if not re.match(r'[a-zA-Z0-9 ,\-$@.]', char):
-                return f"Illegal character found: '{char}'"
-        return "Invalid input detected."
+                if char not in extra:
+                    return f"Illegal character found: '{char}'"
+        return True
+        #return "Invalid input detected."
 def is_number(input_string):
     try:
         # Try converting to an integer
@@ -118,3 +121,21 @@ def is_checksum_valid(address: str) -> bool:
         elif int(address_hash[i], 16) <= 7 and address[i].lower() != address[i]:
             return False
     return True
+
+def multi_task(task_list):
+    with ThreadPoolExecutor() as executor:
+        futures = []
+        for task in task_list:
+            fxn = task.pop(0)  
+            if type(task[0]).__name__ == 'dict':
+                future = executor.submit(fxn, **task[0])
+            else:
+                future = executor.submit(fxn, *task)
+            futures.append(future)
+
+        result = []
+        for future in futures:
+            response = future.result()
+            result.append(response)
+    return result
+        

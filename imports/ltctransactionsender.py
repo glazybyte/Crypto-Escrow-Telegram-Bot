@@ -89,10 +89,14 @@ def send_ltc_transaction(ltc_address, ltc_private_key_hex, recipient_address, am
 
 
 
-def send_transaction(bot_state, tradeId):
+def send_transaction(bot_state, action_id):
     # Extract trade and wallet details
-    tradeDetails = bot_state.get_var(tradeId)
-    walletDetails = bot_state.get_wallet_info(tradeId)
+    tradeDetails = {}
+    if action_id.startswith('TRADE'):
+        tradeDetails = bot_state.get_var(action_id)
+    elif action_id.startswith('TXID'):
+        tradeDetails = bot_state.get_tx_var(action_id)
+    walletDetails = bot_state.get_wallet_info(action_id)
 
     # Source Escrow Wallet
     ltc_address = walletDetails["publicKey"]

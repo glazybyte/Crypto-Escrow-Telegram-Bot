@@ -12,7 +12,7 @@ class MySQLDatabase:
             max_overflow=5,  
             pool_pre_ping=True 
         )
-       
+        #print(f"mysql+pymysql://{user}:{password}@{host}:{port}/{database}")
         self.Session = sessionmaker(bind=self.engine)
 
     def _execute_with_retries(self, query, params=None, max_retries=5, delay=0.9):
@@ -98,8 +98,72 @@ class MySQLDatabase:
     def _delete_row(self, table_name, key):
         query = f"DELETE FROM {table_name} WHERE `key` = :key"
         self._execute_with_retries(query, {"key": key})
+    def send_data_items(self, id, value):
+        seller = value.pop('seller', None)
+        tags = value.pop('tags', None)
+        data = value
 
+        
+        self._send_data_with_merge("items", id, data, seller=seller, tags=tags)
+    def send_data_txns(self, id, value):
+        item_id = value.pop('item_id', None)
+        buyer = value.pop('buyer', None)
+        data = value
+        self._send_data_with_merge("txns", id, data, item_id=item_id, buyer=buyer)
+
+    def retrieve_data_items(self, id):
+        return self._retrieve_data_with_merge("items", id)
+    
+    def retrieve_data_txns(self, id):
+        return self._retrieve_data_with_merge("txns", id)
+    
+    def fetch_items_by_seller(self, seller):
+        query = "SELECT id, data, seller, tags FROM items WHERE seller = :seller"
+        results = self._execute_with_retries(query, {"seller": seller}).fetchall()
+        if results:
+            items = [
+                {**json.loads(row['data']), "id": row['id'], "seller": row['seller'], "tags": row['tags']}
+                for row in results
+            ]
+            return items
+        else:
+            return []
+    def send_data_intervals_timeouts(self, id, type, context, cmd, next_call_at):
+        self._send_data("intervals_timeouts", id, {"type": type, "context": context, "cmd": cmd, "next_call_at": next_call_at})
+
+    def retrieve_data_intervals_timeouts(self, id):
+        return self._retrieve_data("intervals_timeouts", id)
+    def delete_item(self, id):
+        self._delete_row("items", id)
+
+    def delete_interval_timeout(self, id):
+        self._delete_row("intervals_timeouts", id)
+    def _send_data_with_merge(self, table_name, id, data, **additional_columns):
+        value_json = json.dumps(data)
+        columns = ', '.join(f"`{col}`" for col in additional_columns)
+        values = ', '.join(f":{col}" for col in additional_columns)
+        
+        update_clause = ', '.join(f"`{col}` = :{col}" for col in additional_columns)
+        query = f"""
+            INSERT INTO {table_name} (`id`, `data`, {columns})
+            VALUES (:id, :data, {values})
+            ON DUPLICATE KEY UPDATE `data` = :data, {update_clause}
+        """
+        params = {"id": id, "data": value_json, **additional_columns}
+        self._execute_with_retries(query, params)
+    
+    def _retrieve_data_with_merge(self, table_name, id):
+        query = f"SELECT * FROM {table_name} WHERE `id` = :id"
+        result = self._execute_with_retries(query, {"id": id}).first()
+        if result:
+            parent_dict = result._asdict()
+            data_json = json.loads(parent_dict.pop('data'))
+            merged_data = {**data_json, **parent_dict}
+            return merged_data
+        else:
+            return {}
+    def fetch_all_data_intervals_timeouts(self):
+        return self._fetch_all("intervals_timeouts")
     def close(self):
-       
         pass
 

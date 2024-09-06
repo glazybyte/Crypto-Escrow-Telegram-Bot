@@ -42,19 +42,6 @@ def get_latest_blockhash():
     else:
         print("Failed to fetch the latest blockhash")
         print(response_json)
-
-
-    """
-    Sends a serialized Solana transaction to the Solana mainnet.
-
-    Args:
-        transaction_json_str (str): The JSON string representation of the Solana transaction.
-        rpc_url (str): The RPC URL of the Solana mainnet.
-
-    Returns:
-        dict: The response from the Solana RPC server.
-    """
-    # Convert the JSON string into a dictionary
     try:
         transaction_json = json.loads(transaction_json_str)
     except json.JSONDecodeError as e:
@@ -190,20 +177,29 @@ def send_transaction(sender_private_key, fee_payer_private_key, recipient_addres
 
         log_message(error_message, log_file)
 
-def send_usdt_sol_transaction(tradeId, bot_state: GlobalState):
-    tradeDetails = bot_state.get_var(tradeId)
-    walletDetails = bot_state.get_wallet_info(tradeId)
+def send_usdt_sol_transaction(action_id, bot_state: GlobalState):
+    tradeDetails = {}
+    if action_id.startswith('TRADE'):
+        tradeDetails = bot_state.get_var(action_id)
+    elif action_id.startswith('TXID'):
+        tradeDetails = bot_state.get_tx_var(action_id)
+    walletDetails = bot_state.get_wallet_info(action_id)
 
     log_file = tradeDetails['ourAddress']
     sender_private_key = walletDetails['secretKey']
     recipient_address = tradeDetails['sellerAddress']
     send_amount = Decimal(tradeDetails["tradeAmount"])
 
-    log_message(f"Initiating transaction for Trade ID: {tradeId}", log_file)
+    log_message(f"Initiating transaction for Trade ID: {action_id}", log_file)
     log_message(f"Sender: {walletDetails['publicKey']}, Recipient: {recipient_address}, Amount: {send_amount} USDT", log_file)
 
 
     send_transaction(sender_private_key, os.getenv('SOLANA_FEE_PAYER_SECRET'), recipient_address, send_amount, log_file)
-    log_message(f"Transaction for Trade ID {tradeId} completed", log_file)
+    log_message(f"Transaction for Trade ID {action_id} completed", log_file)
 
 #LOVE you Solana
+
+
+
+#Issue1: After sending 2 taking a fee of 2% ie 0.04 but still leaves tiny amount of 0.000001 on escrow wallet (83hCEcaxPMSzaJAc2UAJ9tojeFLyweyeZvZwDs8JEdSv)
+#reason: Not tried to figure yet

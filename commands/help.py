@@ -6,9 +6,10 @@ def execute(update: Update, context: CallbackContext, bot_state) -> None:
     help_text = (
         "Here are the available commands:\n\n"
         "/escrow - Starts a new escrow interaction\n\n"
-        "/cancel - cancel the current escrow session \n\n"
+        "/cancel - Cancel the current escrow session \n\n"
         "/contact - Contact Support\n\n"
-        "/info - know more about bot\n\n"
+        "/info - Know more about bot\n\n"
+        "/fee - Calculate amount to send after inclusion of fee\n\n"
         "/donate - Feeling generous today?\n\n"
     )
     update.message.reply_text(help_text)

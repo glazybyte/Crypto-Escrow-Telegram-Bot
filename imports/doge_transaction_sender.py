@@ -104,11 +104,15 @@ def send_doge_transaction(doge_address, doge_private_key_hex, recipient_address,
         log_message(error_message, log_file)
         raise
 
-def send_transaction(bot_state, tradeId):
+def send_transaction(bot_state, action_id):
 
     # Extract trade and wallet details
-    tradeDetails = bot_state.get_var(tradeId)
-    walletDetails = bot_state.get_wallet_info(tradeId)
+    tradeDetails = {}
+    if action_id.startswith('TRADE'):
+        tradeDetails = bot_state.get_var(action_id)
+    elif action_id.startswith('TXID'):
+        tradeDetails = bot_state.get_tx_var(action_id)
+    walletDetails = bot_state.get_wallet_info(action_id)
 
     # Source Escrow Wallet Details
     doge_address = walletDetails["publicKey"]

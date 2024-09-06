@@ -1,0 +1,11 @@
+#Feature
+Add BSC support (30% done)
+Unsure whether to add TON or not given high fees than rest upto now
+Add ticket system for dispute purchases
+Add Bot moderator support to handle tickets (Will need to hold a upfront fee for them if they scam, also will need to redesign transaction structure to include their share after assistance)
+
+
+#Dev level
+globalState.py, tx_interval_checker are little messy
+Add universal command handler that distribute commands after basic processing
+add use for enabled, hidden, OperaterCommand in command modules
