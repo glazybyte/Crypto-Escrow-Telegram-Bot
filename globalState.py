@@ -340,7 +340,7 @@ class GlobalState:
                     cached_items.append(item)
         return cached_items
             
-def interval_up(context, bot, bot_state: GlobalState):
+def timeout_up(context, bot, bot_state: GlobalState):
     print('Cleaner Initiating...')
     user_data_limit = 20_000
     tx_limit = 15_000
@@ -349,7 +349,6 @@ def interval_up(context, bot, bot_state: GlobalState):
     #wallet_limit = tx_limit + escrow_limit
     #The total memory ussage should under 200 MB with these presets
     base = bot_state.state
-
     print('starting Ussage Checker...')
     time.sleep(1)
     print('-------------------------------------------------------------')
@@ -438,21 +437,7 @@ def interval_up(context, bot, bot_state: GlobalState):
 
         print('Cleaner Finished')
 
-    
-    # print('starting Ussage Checker...')
-    time.sleep(1)
-    # print('-------------------------------------------------------------')
-    # print(f"escrow length: {len(base['escrow'])}, ussage: {(len(base['escrow'])/escrow_limit)*100}%")
-    # print(f"items length: {len(base['items'])}, ussage: {(len(base['items'])/items_limit)*100}%")
-    # print(f"txs length: {len(base['txs'])}, ussage: {(len(base['txs'])/tx_limit)*100}%")
-    # print(f"user_data length: {len(base['user_data'])}, ussage: {(len(base['user_data'])/user_data_limit)*100}%")
-    
-    # process = psutil.Process(os.getpid())
-    # memory_usage = process.memory_info().rss / (1024 ** 2)  
-    # print(f"\nMemory Usage: {memory_usage:.2f} MB")
-    # print('-------------------------------------------------------------')
 
-    #eh dont think deep clean will be needed but here we go another 65 lines
     ussage_percentage = {
             'user_data_limit': len(base['user_data'])/user_data_limit,
             'tx_limit': len(base['txs'])/tx_limit,
@@ -461,6 +446,7 @@ def interval_up(context, bot, bot_state: GlobalState):
         }
     if ussage_percentage['user_data_limit'] <0.95 and ussage_percentage['tx_limit'] <0.95 and ussage_percentage['escrow_limit'] <0.95 and ussage_percentage['items_limit'] <0.95:
         print('Deep clean not needed')
+        bot_state.add_timeout(60*60, 'hourly_cleanup')
         return
     context = 'deepclean'
 
@@ -522,6 +508,7 @@ def interval_up(context, bot, bot_state: GlobalState):
 
                 i += 1
             selected_data = {}
+        bot_state.add_timeout(25*60, 'deepclean')
     print('starting Ussage Checker...')
     time.sleep(1)
     print('-------------------------------------------------------------')
@@ -543,9 +530,3 @@ def pop_list(poplist, dict_data):
         #clean base['user_data']
 #lol after completing get_seller_items fxn to include item_id I realised it have item_id saved as id already, now not touching it tch tch
 
-
-# so in data the maximum size we are producing is wallet
-# storing 100K wallets, program takes up about 100MB
-# Hmm so other objects we can safely assume its gonna be lower (ie user, tx, item, escrow, wallet_queue)
-# now 100k lets assume created by all unique users for unique item purchases (tx size<escrow but but... tx+item>escrow)
-# now we total 100k wallet+ 100K tx + 100K item + 100K wallet queue = 400K
