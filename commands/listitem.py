@@ -1,7 +1,6 @@
 import os
 from telegram import Update
 from telegram.ext import CallbackContext
-from datetime import datetime
 from decimal import Decimal
 import random
 
@@ -103,7 +102,7 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
     elif(item_details['type'] == 'manual'):
         bot_state.clear_waiting_for_input(chat_id)
         numb = is_number(user_input)
-        if not numb:
+        if not numb or numb<1:
             update.message.reply_text("Invalid Input for stock number")
             return
         elif numb > Decimal('100') and str(update.message.from_user.id) != os.getenv('BOT_OPERATER'):

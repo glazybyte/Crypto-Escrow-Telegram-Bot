@@ -1,8 +1,6 @@
-import os, time
+import time
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 from telegram.ext import CallbackContext
-from datetime import datetime
-from decimal import Decimal
 import random
 
 from globalState import GlobalState
@@ -18,7 +16,7 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
         update.message.reply_text("Enter a item ID")
         return
     item_details = bot_state.get_item_details(user_input)
-    if not item_details:
+    if not item_details or len(item_details)<=2:
         update.message.reply_text("Invalid Item ID")
         return
     if item_details['toggle'] == 'disabled' or (item_details['stock']-item_details['lockedStock']) <=0:

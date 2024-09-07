@@ -71,7 +71,7 @@ def handleResponse(response, bot_state: GlobalState, bot):
             bot_state.remove_address_from_queue(response['publicKey'])
             log_message(f"[LTC wallet Checker]:: {response['publicKey']} Transaction for {response['amount']} detected", log_file)
             if(float(response['amount'])>=float(tradeDetails["tradeAmount"])):
-                proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot)
+                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
             else:
                 if type == "TRADE":
                     handle_escrow_insuff(response, bot, tradeDetails, bot_state)
@@ -91,7 +91,7 @@ def handleResponse(response, bot_state: GlobalState, bot):
             log_message(f"[DOGE wallet Checker]:: {response['publicKey']} Transaction for {response['amount']} detected", log_file)
             
             if(float(response['amount'])>=float(tradeDetails["tradeAmount"])):
-                proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot)
+                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
             else:
                 if type == "TRADE":
                     handle_escrow_insuff(response, bot, tradeDetails, bot_state)
@@ -106,18 +106,13 @@ def handleResponse(response, bot_state: GlobalState, bot):
             log_message(f"Error: {response}", log_file)
     elif tradeDetails['currency'] == "SOL (Solana)" or tradeDetails['currency'] == "USDT (Solana)":
         #testing
-        proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot)
-        bot_state.remove_address_from_queue(response['publicKey'])
-        return
-
-
-
-
-
+        # proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot)
+        # bot_state.remove_address_from_queue(response['publicKey'])
+        # return
         if(response["amount"]>= Decimal(tradeDetails["tradeAmount"])):
             print(f"[SOL Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
             bot_state.remove_address_from_queue(response['publicKey'])
-            proceed_transaction(bot_state, wallet['tradeId'], response["amount"], tradeDetails, bot)
+            proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
         elif response["amount"] == 0:
             print(f"[SOL wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
         else:
@@ -125,18 +120,18 @@ def handleResponse(response, bot_state: GlobalState, bot):
                 handle_escrow_insuff(response, bot, tradeDetails, bot_state)
             elif type == "TX":
                 handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
-    elif tradeDetails['currency'] == "BNB (BSC Bep-20)" or tradeDetails['currency'] == "USDT (BSC Bep-20)":
-        if(response["amount"]>= Decimal(tradeDetails["tradeAmount"])):
-            print(f"[BSC Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
-            bot_state.remove_address_from_queue(response['publicKey'])
-            proceed_transaction(bot_state, wallet['tradeId'], response["amount"], tradeDetails, bot)
-        elif response["amount"] == 0:
-            print(f"[BSC wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
-        else:
-            if type == "TRADE":
-                handle_escrow_insuff(response, bot, tradeDetails, bot_state)
-            elif type == "TX":
-                handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
+    # elif tradeDetails['currency'] == "BNB (BSC Bep-20)" or tradeDetails['currency'] == "USDT (BSC Bep-20)":
+    #     if(response["amount"]>= Decimal(tradeDetails["tradeAmount"])):
+    #         print(f"[BSC Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
+    #         bot_state.remove_address_from_queue(response['publicKey'])
+    #         proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
+    #     elif response["amount"] == 0:
+    #         print(f"[BSC wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
+    #     else:
+    #         if type == "TRADE":
+    #             handle_escrow_insuff(response, bot, tradeDetails, bot_state)
+    #         elif type == "TX":
+    #             handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
 
 def handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet):
     bot_state.remove_address_from_queue(response['publicKey'])
@@ -149,8 +144,8 @@ def handle_buy_item_insuff(response, bot, tx_details, bot_state, wallet):
     bot.send_message(chat_id=tx_details["buyer"], text="Your Transaction seems to have less than the quoted amount in trade, contact @addylad6725 for resolution")
     close_trade(bot_state=bot_state, action_id=wallet['tradeId'], message="close[insuff_funds_receieved]")
 
-def proceed_transaction(bot_state: GlobalState, tradeId, response, tradeDetails, bot):
-    wallet = bot_state.get_address_info(response['publicKey'])
+def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, bot):
+    #wallet = bot_state.get_address_info(response['publicKey'])
     if wallet['tradeId'].startswith('TRADE'):
         tradeDetails['status'] = 'open[paid]'
         bot_state.set_var(tradeId, tradeDetails)
@@ -159,11 +154,12 @@ def proceed_transaction(bot_state: GlobalState, tradeId, response, tradeDetails,
             [InlineKeyboardButton("I have Sent", callback_data='option_9')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
-        bot.send_message(
+        message = bot.send_message(
             chat_id=tradeDetails["seller"], 
             text="Buyer has sent the payment to our escrow wallet, You can now safely deliever your product \n\n It's recomended that you keep delievery and working proof to yourself until you receive the payment. \n\n CLick button below after you have delivered it",
             reply_markup=reply_markup
         )
+        bot_state.set_waiting_for_input(tradeDetails["seller"], [message], 'button', 'commands.escrow')
     elif wallet['tradeId'].startswith('TXID'):
         item_details = bot_state.get_item_details(tradeDetails["item_id"])
         tradeDetails['status'] = 'open[paid]'
@@ -188,21 +184,19 @@ def proceed_transaction(bot_state: GlobalState, tradeId, response, tradeDetails,
             if item_details['stock'] > 0:
                 delivery = item_details['stockList'].pop()
                 bot_state.add_item(tradeDetails["item_id"], item_details)
-
+                tradeDetails['delivery'] = delivery
                 keyboard = [
-                    [InlineKeyboardButton("Confirm Working", callback_data='option_18')],
-                    [InlineKeyboardButton("I am Having Issues", callback_data='option_19')]
+                    [InlineKeyboardButton("Take Delivery", callback_data='option_23')],
                 ]
                 reply_markup = InlineKeyboardMarkup(keyboard)
                 message = bot.send_message(
                     parse_mode=ParseMode.MARKDOWN,
-                    chat_id=tradeDetails["buyer"], 
-                    text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nDelivery Key(s):\n {delivery}\n(you have 10 minutes to confirm if working or not)", 
+                    chat_id=tradeDetails["buyer"],
+                    text=f"*Item Delivery*\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nWe recommend to start recording a video while clicking 'Take Delivery' and verifying your keys for proof", 
                     reply_markup=reply_markup
                 )
-                bot_state.set_waiting_for_input(tradeDetails["buyer"], [message], 'button')
-                t = bot_state.add_timeout(10*60, tradeId)
-                tradeDetails['product_confirmation_timeout'] = t
+                bot_state.set_waiting_for_input(tradeDetails["buyer"], [message, {'tx_id': tradeId, 'context': 'deliveryClaim'}], 'button')
+                
                 bot_state.set_tx_var(tradeId, tradeDetails)
                 close_trade(bot_state, tradeId, 'close[delivered]')
         elif item_details['type'] == 'manual':
@@ -212,8 +206,8 @@ def proceed_transaction(bot_state: GlobalState, tradeId, response, tradeDetails,
                 text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nSeller is notified to Deliver your Product.\n(if seller fails to deliver within 1 day or you have issues contact us)", 
             )
             keyboard = [
-                    [InlineKeyboardButton("I have Sent", callback_data='option_20')],
-                ]
+                [InlineKeyboardButton("I have Sent", callback_data='option_20')],
+            ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             message = bot.send_message(
@@ -222,7 +216,8 @@ def proceed_transaction(bot_state: GlobalState, tradeId, response, tradeDetails,
                 text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\n𝗕𝘂𝘆𝗲𝗿: {tradeDetails['buyer']}\n\nThe Buyer has paid the amount, do the delivery!", 
                 reply_markup=reply_markup
             )
-            bot_state.set_waiting_for_input(item_details['seller'], [message], 'button')
+            bot_state.set_waiting_for_input(tradeDetails["seller"], [message, {'tx_id': tradeId, 'context': 'product_verification'}], 'button')
+        
             t = bot_state.add_timeout(24*60*60, tradeId)
             tradeDetails['manual_timeout'] = t
             bot_state.set_tx_var(tradeId, tradeDetails)
@@ -272,13 +267,32 @@ def timeout_up(context, bot, bot_state: GlobalState):
 def button(update: Update, context: CallbackContext, bot_state: GlobalState):
     query = update.callback_query
     #message_id = query.message.message_id
-    tx_id = bot_state.getUserTrade(str(query.from_user.id))
+    button_context = bot_state.get_waiting_for_input_context(str(query.from_user.id))
+    tx_id = button_context['tx_id']
     tx_details = bot_state.get_tx_var(tx_id)
     item_details = bot_state.get_item_details(tx_details['item_id'])
+    
     if tx_details['status'] not in ['open[paid]', 'close[delivered]']:
         return
-    
-    if query.data == 'option_18' and str(query.from_user.id) == tx_details['buyer']:
+    if button_context['context'] == 'deliveryClaim':
+        keyboard = [
+            [InlineKeyboardButton("Confirm Working", callback_data='option_18')],
+            [InlineKeyboardButton("I am Having Issues", callback_data='option_19')]
+        ]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        message = context.bot.edit_message_text(
+            message_id=button_context["message_id"],
+            parse_mode=ParseMode.MARKDOWN,
+            chat_id=tx_details["buyer"],
+            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\nDelivery Key(s):\n {tx_details['delivery']}\n(you have 10 minutes to confirm if working or not)", 
+            reply_markup=reply_markup
+        )
+        bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'product_verification'}], 'button')
+        t = bot_state.add_timeout(10*60, tx_id)
+        tx_details['product_confirmation_timeout'] = t
+        bot_state.set_tx_var(tx_id, tx_details)
+
+    elif query.data == 'option_18' and str(query.from_user.id) == tx_details['buyer']:
         bot_state.remove_timer(tx_details['product_confirmation_timeout'])
         context.bot.send_message(
             chat_id=tx_details["buyer"], 
@@ -310,7 +324,8 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
             text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n\n Seller is notified to assist you, they have 1 day to resolve\nClick button below if issue is resolved", 
             reply_markup=reply_markup
         )
-        bot_state.set_waiting_for_input(tx_details["buyer"], [message], 'button')
+        bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'issue_resolved'}], 'button')
+        
     elif query.data == 'option_21'and str(query.from_user.id) == tx_details['buyer']:
         context.bot.send_message(
             chat_id=tx_details["buyer"], 
@@ -343,7 +358,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
             text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n Seller says to have delivered the product(s), click the button below to confirm (you have 10 minutes to confirm if working or not)", 
             reply_markup=reply_markup
         )
-        bot_state.set_waiting_for_input(tx_details["buyer"], [message], 'button')
+        bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'product_verification'}], 'button')
         t = bot_state.add_timeout(10*60, tx_id)
         tx_details['product_confirmation_timeout'] = t
         bot_state.set_tx_var(tx_id, tx_details)

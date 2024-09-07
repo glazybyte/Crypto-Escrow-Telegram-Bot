@@ -1,11 +1,14 @@
 from telegram import Update, ParseMode
 from telegram.ext import CallbackContext
-from datetime import datetime
-from decimal import Decimal
+
 
 from globalState import GlobalState
 def execute(update: Update, context: CallbackContext, bot_state: GlobalState) -> None:
-    user_input = context.args[0]
+    if len(context.args)>0:
+        user_input = context.args[0]
+    else:
+        update.message.reply_text("Enter a item ID")
+        return
     item_details = bot_state.get_item_details(user_input)
     if not item_details or item_details['toggle'] == 'disabled':
         update.message.reply_text("Invalid Item ID")
@@ -29,7 +32,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
     
 
 description = "Check ping for bot"
-aliases = ['/delistitem', 'di']
+aliases = ['/delistitem', '/dl']
 enabled = False
 hidden = True
 OperaterCommand = False

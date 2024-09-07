@@ -1,12 +1,14 @@
-import re
+import os, hashlib, base64, re
 from decimal import Decimal, InvalidOperation
 from concurrent.futures import ThreadPoolExecutor
 from telegram.ext import CallbackContext
 from telegram.error import BadRequest
 from solathon import PublicKey
-from base58 import b58decode, b58decode_check
+from base58 import b58decode
 from binascii import Error as BinasciiError
-import os, hashlib
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
+from Crypto.Cipher import AES
 
 def log_message(message, log_file="error_log", mainThread=False):
     log_dir = 'log'
@@ -49,12 +51,15 @@ def is_number(input_string):
 
 def is_valid_user(input_value, context: CallbackContext):
     try:
+        user_chat=''
         if input_value.isdigit():
             user_chat = context.bot.get_chat(int(input_value))
-        else:
-            if not input_value.startswith("@"):
-                input_value = f"@{input_value}"
-            user_chat = context.bot.get_chat(input_value)
+            if user_chat.type != 'private':
+                return False
+        # else:
+        #     if not input_value.startswith("@"):
+        #         input_value = f"@{input_value}"
+        #     user_chat = context.bot.get_chat(input_value)
         return user_chat.id
     
     except (BadRequest, ValueError):
@@ -139,3 +144,46 @@ def multi_task(task_list):
             result.append(response)
     return result
         
+def private_key_gen():
+
+    key = os.urandom(32)  # Generate a 256-bit key securely
+    encoded_key = base64.b64encode(key).decode('utf-8')
+    return encoded_key
+
+def get_private_key():
+    encoded_key = os.getenv('PRIVATE_KEY')
+    key_bytes = base64.b64decode(encoded_key)
+    if len(key_bytes) != 32:
+        raise ValueError("Error in private key")
+    
+    return key_bytes
+
+def encrypt_text(plain_text):
+
+    key = get_private_key()
+    if len(key) != 32:
+        raise ValueError("Error in private key")
+    
+    iv = os.urandom(16)
+    cipher = Cipher(algorithms.AES(key), modes.GCM(iv), backend=default_backend())
+    encryptor = cipher.encryptor()
+    ciphertext = encryptor.update(plain_text.encode('utf-8')) + encryptor.finalize()
+    encrypted_data = base64.b64encode(iv + ciphertext).decode('utf-8')
+    
+    return encrypted_data
+
+def decrypt_text(encrypted_data):
+
+    key = get_private_key()
+    encrypted_data_bytes = base64.b64decode(encrypted_data)
+    iv = encrypted_data_bytes[:16]  # First 16 
+    ciphertext = encrypted_data_bytes[16:]  
+    cipher = AES.new(key, AES.MODE_GCM, nonce=iv)
+    decrypted_padded_text = cipher.decrypt(ciphertext)
+    try:
+        decrypted_text = decrypted_padded_text.decode('utf-8')
+    except UnicodeDecodeError:
+        decrypted_text = decrypted_padded_text
+
+    return decrypted_text
+

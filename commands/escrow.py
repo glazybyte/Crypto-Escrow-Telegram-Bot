@@ -1,5 +1,5 @@
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode, MessageEntity
-from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQueryHandler, MessageHandler, Filters
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
+from telegram.ext import CallbackContext
 import time
 import random
 
@@ -88,10 +88,9 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
     tradeId = bot_state.getUserTrade(str(query.from_user.id))
     tradeDetails = bot_state.get_var(tradeId)
     
-    if tradeDetails['status'] != 'open':
+    if tradeDetails['status'] not in ['open', 'open[paid]']:
         return
     #global_dict[query.message.message_id] = 
-    
     if(tradeDetails["step1"] != "done"):        
         tradeDetails["step1"] = "done"
         selected = ""
@@ -106,6 +105,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
         else:
             return
         if selected == "seller":
+            bot_state.set_var(tradeId, tradeDetails)
             query.edit_message_text(text="━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlright, you're the Seller.\n\nSend the ID of the Buyer:")
             bot_state.set_waiting_for_input(str(query.from_user.id), "buyer_id")
         elif selected == "buyer":
@@ -113,8 +113,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
             query.edit_message_text(text="━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlright, you're the Buyer.\n\nSend the ID of the Seller:")
             bot_state.set_waiting_for_input(str(query.from_user.id), "seller_id")
         return
-    if(tradeDetails["step4"] != "done"):
-        
+    elif tradeDetails["step4"] != "done":
         selected = ""
         if query.data == 'option_3':
             tradeDetails["currency"] = 'LTC'
@@ -134,12 +133,12 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
         multi_task(
             [
                 [bot_state.set_var, tradeId, tradeDetails],
-                [bot_state.set_waiting_for_input, str(query.from_user.id), "tradeAmount"],
+                [bot_state.set_waiting_for_input, str(query.from_user.id), "tradeAmount", 'text', 'commands.escrow'],
             ]
         )
         query.edit_message_text(text=f"Ok, Selected Crypto is {tradeDetails['currency']}. \n\nEnter the amount of {tradeDetails['currency']} for trade:")
         return
-    if(tradeDetails["step6"] != "done"):
+    elif(tradeDetails["step6"] != "done"):
         if(tradeDetails["seller"] == str(query.from_user.id)):
             if(tradeDetails["sellerApproval"] != True):
                 if query.data == 'option_4':
@@ -185,7 +184,8 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                     return
         if(tradeDetails["buyerApproval"] == True and tradeDetails["sellerApproval"] == True):
             #Notify both of them
-            [message1, message2, message3] = multi_task(
+            tradeDetails["step6"] = "done"
+            [message1, message2, temp, temp1] = multi_task(
                 [
                     [context.bot.send_message, {
                         'chat_id':tradeDetails["buyer"],
@@ -193,18 +193,13 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                     }],
                     [context.bot.send_message, {
                         'chat_id':tradeDetails["seller"],
-                        'text':f"Alrighty Right! Both parties have accepted the trade"
+                        'text':f"Alrighty Right! Both parties have accepted the trade\nSince you're the seller enter your {tradeDetails['currency']} address to receive the funds on after trade"
                     }],
-                    [context.bot.send_message, {
-                        'chat_id':tradeDetails["seller"],
-                        'text':f"Since you're the seller enter your {tradeDetails['currency']} address to receive the funds on after trade"
-                    }],
-                    [bot_state.set_waiting_for_input, tradeDetails["seller"], "seller_address"],
+                    [bot_state.set_waiting_for_input, tradeDetails["seller"], "seller_address", 'text', 'commands.escrow'],
                     [bot_state.set_var, tradeId, tradeDetails]
                 ]
             )
-            tradeDetails["step6"] = "done"
-            if message1 and message2 and message3:
+            if message1 and message2 :
                 """All Good no function needed here"""
             else:
                 context.bot.send_message(chat_id=tradeDetails["seller"], text=f"Couldnt message the other person, make sure they have ran /start atleast once")
@@ -215,7 +210,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                 query.answer()
                 return
         query.answer()
-    if(tradeDetails["step8"] != "done"):
+    elif(tradeDetails["step8"] != "done"):
         if(str(query.from_user.id) == tradeDetails["buyer"] and query.data == 'option_8'):
             tradeDetails["step8"] = "done"
             multi_task(
@@ -232,9 +227,8 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                     [bot_state.set_var, tradeId, tradeDetails]
                 ]
             )
-            query.answer()
-            
-    if(tradeDetails["step9"] != "done"):
+            query.answer()      
+    elif(tradeDetails["step9"] != "done"):
         if(str(query.from_user.id) == tradeDetails["seller"] and query.data == 'option_9'):
             tradeDetails["step9"] = "done"
             context.bot.send_message(chat_id=tradeDetails["seller"], text="Alrighty Right! Asking buyer for confirmation")
@@ -250,7 +244,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
             bot_state.set_waiting_for_input(tradeDetails["buyer"], [message], 'button')
             bot_state.set_var(tradeId, tradeDetails)
             return
-    if(tradeDetails["step10"] != "done"):
+    elif(tradeDetails["step10"] != "done"):
         if(str(query.from_user.id) == tradeDetails["buyer"] and query.data == 'option_10'):
             tradeDetails["step10"] = "done"
             context.bot.send_message(chat_id=tradeDetails["buyer"], text="Alrighty Right! Releasing Payment to seller \n\nDont forget to recommend our services to your friends!!")
@@ -325,10 +319,10 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
         if waiting_for == "tradeDetails":
             tradeDetails["tradeDetails"] = user_input
             message = update.message.reply_text(
-                #reply_to_message_id=update.message.message_id,
+                reply_to_message_id=update.message.message_id,
                 text=f"Alrighty right noted. Proceeding with the trade...")
             bot_state.clear_waiting_for_input(chat_id)
-            time.sleep(2)
+            time.sleep(0.5)
 
             keyboard = [
                 [InlineKeyboardButton("LTC", callback_data='option_3')],
@@ -482,8 +476,7 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
             keyboard = [
                 [InlineKeyboardButton("I have Sent", callback_data='option_8')]
             ]
-        else:
-            print("EHHHHHH")
+        
         reply_markup = InlineKeyboardMarkup(keyboard)
         if(wallet):
             bot_state.set_var(tradeId, tradeDetails)

@@ -29,6 +29,8 @@ def handle_timeout(id, timeout, bot, bot_state):
 def timer_handler_init(bot_state: GlobalState, bot):
     log_file = "interval_handler_log"
     bot_state.get_all_timers(True)
+    bot_state.add_timeout(60*60, 'hourly_cleanup', 'globalState', True)
+    bot_state.add_timeout(25*60, 'deepclean', 'globalState', True)
     while True:
         with ThreadPoolExecutor() as executor:
             try:

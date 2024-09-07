@@ -1,7 +1,6 @@
 from telegram import Update
 from telegram.ext import CallbackContext
 from datetime import datetime
-from decimal import Decimal
 def execute(update: Update, context: CallbackContext, bot_state) -> None:
     start_time = datetime.now()
     update.message.reply_text('Pong!')

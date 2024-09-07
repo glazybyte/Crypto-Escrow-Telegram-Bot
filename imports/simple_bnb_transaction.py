@@ -45,4 +45,4 @@ def send_bnb_transaction(tradeId: str, bot_state: GlobalState):
     print(f"Transaction hash: {tx_hash}")
 
 
-#Fuck you bsc (respectfully)
+

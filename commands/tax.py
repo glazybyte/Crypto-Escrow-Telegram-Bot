@@ -1,6 +1,5 @@
 from telegram import Update
 from telegram.ext import CallbackContext
-from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 from imports.utils import validate_text, is_number
 def execute(update: Update, context: CallbackContext, bot_state) -> None:

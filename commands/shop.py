@@ -1,7 +1,5 @@
 from telegram import Update, ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.ext import CallbackContext
-from datetime import datetime
-from decimal import Decimal
 import math
 
 from globalState import GlobalState
@@ -68,7 +66,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
     if len(seller_items) % page_limit != 0:
         total_pages = math.floor(total_pages)+1
     if total_pages == 0:
-        update.message.reply_text("This shop have no items.", parse_mode=ParseMode.MARKDOWN, reply_to_message_id=update.message.message_id)
+        query.message.reply_text("This shop have no items.", parse_mode=ParseMode.MARKDOWN, reply_to_message_id=query.message.message_id)
         return
     msg = f"*{shop_name}*\npage: {page_numb_to_show}/{total_pages}\n"
     

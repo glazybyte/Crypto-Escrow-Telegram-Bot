@@ -7,17 +7,21 @@ from globalState import GlobalState
 from imports.utils import *
 
 def execute(update: Update, context: CallbackContext, bot_state: GlobalState) -> None:
-    if update.message.from_user.id != update.message.chat_id:
-        update.message.reply_text(
-            text=f"This command is only for private messages"
-        )
-        return
+
     if bot_state.isUserLocked(str(update.message.from_user.id)):
         update.message.reply_text(
             text=f"You are currently locked"
         )
         return
-    user_input = update.message.text.strip().split(' ', 3)
+    if len(context.args)>0:
+        user_input = update.message.text.strip().split(' ', 3)
+    else:
+        update.message.reply_text(
+            "Usage: /edit <field> <item_id> <new_value>\n"
+            "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock"
+        )
+        return
+    
     if user_input[1].startswith('shop'):
         user_input = update.message.text.strip().split(' ', 2)
         if len(user_input) < 2:
@@ -105,7 +109,7 @@ def edit_shop_item(user_input, update: Update, context: CallbackContext, bot_sta
             update.message.reply_text("Cannot edit stock for automatic type items.")
             return
         numb = is_number(new_value)
-        if not numb:
+        if not numb or numb<1:
             update.message.reply_text("Invalid input for stock number.")
             return
         elif numb > Decimal('100') and str(update.message.from_user.id) != os.getenv('BOT_OPERATER'):

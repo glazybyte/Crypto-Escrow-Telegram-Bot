@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from telegram import ParseMode
 from telegram.error import TelegramError
 
-from imports.utils import log_message
+from imports.utils import log_message, encrypt_text
 from databaseClass import MySQLDatabase
 from commands.cancel import close_trade
 
@@ -11,7 +11,7 @@ class GlobalState:
     
     def __init__(self, enabledb, host='', port=6969, user='', password='', database=''):
         self.state = {
-            "lockmanager": {},
+            "lockmanager": {'var_locker':{}},
             "user_data": {},
             "escrow": {},
             "waiting_for_input": {},
@@ -34,8 +34,7 @@ class GlobalState:
                 password= password,
                 database= database
             )
-        self.add_timeout(60*60, 'hourly_cleanup')
-        self.add_timeout(25*60, 'deepclean')
+        
     def set_var(self, var: str, new_value: dict):
         self.state['escrow'][var] = new_value
         self.state['escrow'][var]['__last_access'] = int(time.time())
@@ -60,7 +59,42 @@ class GlobalState:
     
     def isUserLocked(self, user: str):
         return self.state["lockmanager"].get(user, False)
+    
+    def lockvar(self, name):
+        if 'var_locker' not in self.state["lockmanager"]:
+            self.state["lockmanager"]['var_locker'] = {}
+            self.state["lockmanager"]['var_locker'][name] = True
+            return True
+        elif name not in self.state["lockmanager"]['var_locker']:
+            self.state["lockmanager"]['var_locker'][name] = True
+            return True
+        elif name in self.state["lockmanager"]['var_locker']:
+            if self.state["lockmanager"]['var_locker'][name]:
+                return False
+            else:
+                self.state["lockmanager"]['var_locker'][name] = True
+                return True
 
+    def unlockvar(self, name):
+        self.state["lockmanager"]['var_locker'].pop(name, None)
+
+    def is_var_locked(self, name):
+        return self.state["lockmanager"]['var_locker'].get(name, False)
+    
+    def acquire_lock(self, main_var, name):
+        is_main_var_lock = True
+        got_value_lock = False
+        should_continue = True
+        while should_continue:
+            if is_main_var_lock != False:
+                is_main_var_lock = self.is_var_locked(main_var)
+            if got_value_lock != True:
+                got_value_lock = self.lockvar(name)
+            if is_main_var_lock or not got_value_lock:
+                time.sleep(0.1)
+                continue
+            should_continue=False
+            break
     def getUser(self, userid:str):
         template = {
             "currentTrade": "",
@@ -70,9 +104,12 @@ class GlobalState:
             "shopItems": [],
             "userStatus": "enabled"
         }
+        self.acquire_lock('user_data', userid)
+
         if self.enabledb:
             if userid in self.state["user_data"]:
                 print(f'cache call for {userid}')
+                self.unlockvar(userid)
                 return self.state["user_data"].get(userid,template)
             else:
                 rrun = self.database.retrieve_data_user_trade(userid)
@@ -86,14 +123,16 @@ class GlobalState:
             user['shopItems'] = []
             user['shopName'] = user['shopDesc'] = 'none'
             user['shopStatus'] = 'enabled'
+        self.unlockvar(userid)
         return self.state["user_data"].get(userid, template)
     
     def setUser(self, userid: str, data):
+        self.acquire_lock('user_data', userid)
         self.state["user_data"][userid] = data
         self.state['user_data'][userid]['__last_access'] = int(time.time())
         if self.enabledb:
             self.database.send_data_user_trade(userid, data)
-
+        self.unlockvar(userid)
     def setUserTrade(self, userid: str, id: str):
         user = self.getUser(userid)
         user['currentTrade'] = id
@@ -162,6 +201,7 @@ class GlobalState:
         self.state["waiting_for_input"].pop(chat_id, None)
     
     def save_wallet_info(self, tradeId: str, memonic: str, secretKey: str, publicKey: str, currency: str, tradeType='escrow'):
+        self.acquire_lock('wallets', tradeId)
         self.state["wallets"][tradeId] = {
             "tradeId": tradeId,
             "memonic": memonic,
@@ -172,20 +212,27 @@ class GlobalState:
             "__time_added": int(time.time())
         }
         #self.state['wallets'][tradeId]['__last_access'] = int(time.time())
+        wallet = copy.deepcopy(self.state["wallets"][tradeId])
+        wallet['memonic'] = encrypt_text(wallet['memonic'])
+        wallet['secretKey'] = encrypt_text(wallet['secretKey'])
+        log_message("Wallet generation Successful!\n"+json.dumps(wallet), publicKey)
         if self.enabledb:
             self.database.send_data_wallets(tradeId, self.state["wallets"][tradeId])
-        log_message("Wallet generation Successful!\n"+json.dumps(self.state["wallets"][tradeId]), publicKey)
+        self.unlockvar(tradeId)
+        
     
     def get_wallet_info(self, tradeId: str):
+        self.acquire_lock('wallets', tradeId)
         if self.enabledb:
             if tradeId in self.state["wallets"]:
                 print(f'cache call for {tradeId}')
+                self.unlockvar(tradeId)
                 return self.state["wallets"][tradeId] 
             else:
                 self.state["wallets"][tradeId] = self.database.retrieve_data_wallets(tradeId)
         #self.state['wallets'][tradeId]['__last_access'] = int(time.time())
+        self.unlockvar(tradeId)
         return self.state["wallets"][tradeId]
-
     
     def add_address_to_check_queue(self,publicKey: str, tradeId: str,  currency: str):
         self.state["wallet_checker_queue"][publicKey] = {
@@ -218,6 +265,7 @@ class GlobalState:
         self.state["wallet_checker_queue"].pop(publicKey, None)
 
     def add_item(self,item_id: str, item_details: str):
+        self.acquire_lock('items', item_id)
         self.state["items"][item_id] = item_details
         self.state["items"][item_id]['__last_access'] = int(time.time())
         user = self.getUser(item_details['seller'])
@@ -227,18 +275,22 @@ class GlobalState:
         self.setUser(item_details['seller'], user)
         if self.enabledb:
             self.database.send_data_items(item_id, copy.deepcopy(self.state["items"][item_id]))
+        self.unlockvar(item_id)
         return
     
     def get_item_details(self, item_id: str):
+        self.acquire_lock('items', item_id)
         if self.enabledb:
             if item_id in self.state["items"]:
                 print(f'cache call for Item ID {item_id}')
+                self.unlockvar(item_id)
                 return self.state["items"][item_id]
             else:
 
                 self.state["items"][item_id] = self.database.retrieve_data_items(item_id)
         if item_id in self.state["items"]:
             self.state["items"][item_id]['__last_access'] = int(time.time())
+            self.unlockvar(item_id)
             return self.state["items"][item_id]
         else:
             return False
@@ -254,19 +306,24 @@ class GlobalState:
         self.state["items"].pop(item_id, None)
 
     def set_tx_var(self, tx_id: str, new_value: dict):
+        self.acquire_lock('txs', tx_id)
         self.state['txs'][tx_id] = new_value
         self.state['txs'][tx_id]['__last_access'] = int(time.time())
         if self.enabledb:
             self.database.send_data_txns(tx_id, copy.deepcopy(new_value))
+        self.unlockvar(tx_id)
 
     def get_tx_var(self, tx_id: str):
+        self.acquire_lock('txs', tx_id)
         if self.enabledb:
             if tx_id in self.state['txs']:
                 print(f'cache call for TXID {tx_id}')
                 self.state['txs'][tx_id]['__last_access'] = int(time.time())
+                self.unlockvar(tx_id)
                 return self.state['txs'].get(tx_id)
             else:
                 self.state['txs'][tx_id] = self.database.retrieve_data_txns(tx_id)
+        self.unlockvar(tx_id)
         return self.state['txs'].get(tx_id)
 
     def add_interval(self, reoccur_after, context, cmd):
@@ -292,7 +349,7 @@ class GlobalState:
         if self.enabledb:
             self.database.delete_interval_timeout(interval_timeout_id)
 
-    def add_timeout(self, reoccur_after, context, cmd='none'):
+    def add_timeout(self, reoccur_after, context, cmd='none', is_local=False):
         if cmd == 'none':
             caller_frame = inspect.stack()[1]
             cmd = inspect.getmodule(caller_frame[0]).__name__
@@ -303,7 +360,7 @@ class GlobalState:
             'cmd': cmd,
             'next_call_at': int(time.time()) + int(reoccur_after)
         }
-        if self.enabledb:
+        if self.enabledb and not is_local:
             self.database.send_data_intervals_timeouts(id, self.state['intervals_timeouts'][id]['type'], self.state['intervals_timeouts'][id]['context'], self.state['intervals_timeouts'][id]['cmd'], self.state['intervals_timeouts'][id]['next_call_at'])
         return id
     
@@ -341,7 +398,7 @@ class GlobalState:
         return cached_items
             
 def timeout_up(context, bot, bot_state: GlobalState):
-    print('Cleaner Initiating...')
+    
     user_data_limit = 20_000
     tx_limit = 15_000
     escrow_limit = 15_000
@@ -362,31 +419,46 @@ def timeout_up(context, bot, bot_state: GlobalState):
     print(f"\nMemory Usage: {memory_usage_before:.2f} MB")
     print('-------------------------------------------------------------')
     
+    bot_state.lockvar('txs')
+    bot_state.lockvar('items')
+    bot_state.lockvar('user_data')
+    bot_state.lockvar('wallet_checker_queue')
+    bot_state.lockvar('escrow')
+    print('Locked Variables')
+    time.sleep(2)
     if context == 'hourly_cleanup':
 
+        print('Cleaner Initiating...')
         keys_to_be_poped = []
 
+        
         for tx_id, tx in base['txs'].items(): 
             if tx['status'].startswith('close') and tx['status'] != 'close[delivered]':
                 keys_to_be_poped.append(tx_id)
-
+        
         pop_list(keys_to_be_poped, base['txs'])
+        
         keys_to_be_poped = []
 
+        
         for item_id, item in base['items'].items():
             if (int(time.time())-item['__last_access']) >= 60*60:
                 keys_to_be_poped.append(item_id)
         
         pop_list(keys_to_be_poped, base['items'])
+        
         keys_to_be_poped = []
 
+        
         for user_id, user in base['user_data'].items():
             if (int(time.time())-user['__last_access']) >= 60*60:
                 keys_to_be_poped.append(user_id)
         
         pop_list(keys_to_be_poped, base['user_data'])
+       
         keys_to_be_poped = []
 
+       
         for publicKey, info in base['wallet_checker_queue'].items():
             if (int(time.time())-info['__time_added']) >= 2*60*60:
                 keys_to_be_poped.append(publicKey)
@@ -395,8 +467,10 @@ def timeout_up(context, bot, bot_state: GlobalState):
             bot_state.remove_address_from_queue(key)
         
         keys_to_be_poped = []
+        
         escrow_to_be_closed = []
 
+       
         for escrow_id, escrow in base['escrow'].items():
             if escrow['status'].startswith('close'):
                 keys_to_be_poped.append(escrow_id)
@@ -427,6 +501,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
                 pass
         
         pop_list(keys_to_be_poped, base['escrow'])
+        
         keys_to_be_poped = []
 
         for action_id, wallet in base['wallets'].items():
@@ -446,9 +521,10 @@ def timeout_up(context, bot, bot_state: GlobalState):
         }
     if ussage_percentage['user_data_limit'] <0.95 and ussage_percentage['tx_limit'] <0.95 and ussage_percentage['escrow_limit'] <0.95 and ussage_percentage['items_limit'] <0.95:
         print('Deep clean not needed')
-        bot_state.add_timeout(60*60, 'hourly_cleanup')
-        return
-    context = 'deepclean'
+        bot_state.add_timeout(60*60, 'hourly_cleanup', 'none', True)
+        context = 'return'
+    else:
+        context = 'deepclean'
 
     if context == 'deepclean':
         print('Starting Deep Clean...')
@@ -508,7 +584,16 @@ def timeout_up(context, bot, bot_state: GlobalState):
 
                 i += 1
             selected_data = {}
-        bot_state.add_timeout(25*60, 'deepclean')
+        bot_state.add_timeout(25*60, 'deepclean', 'none', True)
+    
+    bot_state.unlockvar('txs')
+    bot_state.unlockvar('items')
+    bot_state.unlockvar('user_data')
+    bot_state.unlockvar('wallet_checker_queue')
+    bot_state.unlockvar('escrow')
+    print('Variables Unlocked')
+    if context == 'return':
+        return
     print('starting Ussage Checker...')
     time.sleep(1)
     print('-------------------------------------------------------------')
@@ -529,4 +614,6 @@ def pop_list(poplist, dict_data):
         dict_data.pop(key)
         #clean base['user_data']
 #lol after completing get_seller_items fxn to include item_id I realised it have item_id saved as id already, now not touching it tch tch
+
+
 

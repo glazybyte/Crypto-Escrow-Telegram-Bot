@@ -2,7 +2,7 @@ from telegram import Update
 from telegram.ext import CallbackContext
 import concurrent.futures
 
-#from globalState import GlobalState
+
 def execute(update: Update, context: CallbackContext, bot_state) -> None:
     tradeId = bot_state.getUserTrade(str(update.message.from_user.id))
     print(tradeId)
