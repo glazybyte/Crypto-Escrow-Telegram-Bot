@@ -44,12 +44,14 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
 5. edit .env.example:
 
    Get bot token from [Botfather](https://t.me/BotFather)
+   
    Get Blockcypher api Key from [here](https://accounts.blockcypher.com/)
+   
    PRIVATE_KEY and SOLANA_FEE_PAYER_SECRET are generated upon first run be sure to save these values safely
    ```python
    BOT_TOKEN = '73777777:jFc4Tvs0bM' # Get this from Bot Father
    BLOCK_CYPHER_API_TOKEN = '' # Free one works just fine | Will be used to push doge and ltc transactions
-   PRIVATE_KEY='not_set'
+   PRIVATE_KEY = 'not_set'
    SOLANA_FEE_PAYER_SECRET = 'not_set' #used to pay tx fee for USDT, receives 2% of amount in turn
    ```
    Add Mysql Database Credentials
@@ -64,10 +66,12 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
    ```
 
 6. Mysql Setup
-    Using phpmyadmin or mysql terminal run the commands in db.sql to create tables
+
+   Using phpmyadmin or mysql terminal run the commands in db.sql to create tables
 
 7. Start the bot
-    Rename '.env.example' to '.env' and you are good to go for starting the bot
+
+   Rename '.env.example' to '.env' and you are good to go for starting the bot
    ```bash
    python escrowBot.py
    ```
