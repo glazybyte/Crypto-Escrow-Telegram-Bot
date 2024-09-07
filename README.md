@@ -1,12 +1,14 @@
 # Crypto Escrow Telegram Bot
- This python written bot acts as mediator between a product seller and buyer in telegram. It holds Crypto in its wallet and release payment to seller upon both party's approval
+ This python bot acts as mediator between a product seller and buyer on telegram. It holds Crypto in wallet which is stored in db and releases payment to seller upon both parties' approval.
+ 
+Try the bot at: [Here](https://t.me/Escrow_shield_bot)
 
 ![License](https://img.shields.io/badge/license-MIT-blue) ![Python](https://img.shields.io/badge/Python-v3.9.8-blue)
 
 ## Features
 Users can use /escrow command and bot will generates a wallet which receives funds for parties and hold it until both are satisfied.
 
-Users can steup their shop items which can have automatic or manual key/product delivery system, and release the funds to seller after Delivery automatically
+Users can setup their shop items which can have automatic or manual key/product delivery system, and release the funds to seller after delivery automatically.
 
 The crypto wallets are generated and stored in mysql database in encrypted state, does not depend on any other external service to manage wallets
 
@@ -16,7 +18,7 @@ Networks to be added: Binance Smart Chain
 
 The reason bitcoin will not be added is because of huge fee and slow time.
 
-I am open for discussions on which networks to add.
+I am open to discussions on which networks to add and making it better and easier for ussage
 
 ## Installation
 Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398/) to be installed
