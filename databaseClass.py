@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker
-import json
-import time
+import json, time, copy
 
+from imports.utils import encrypt_text, decrypt_text
 class MySQLDatabase:
     def __init__(self, host, port, user, password, database, pool_size=5):
         
@@ -50,9 +50,15 @@ class MySQLDatabase:
         return self._retrieve_data("trade", key)
 
     def send_data_wallets(self, key, value):
-        self._send_data("wallets", key, value)
+        wallet = copy.deepcopy(value)
+        wallet['memonic'] = encrypt_text(wallet['memonic'])
+        wallet['secretKey'] = encrypt_text(wallet['secretKey'])
+        self._send_data("wallets", key, wallet)
 
     def retrieve_data_wallets(self, key):
+        wallet = copy.deepcopy(self._retrieve_data("wallets", key))
+        wallet['memonic'] = decrypt_text(wallet['memonic'])
+        wallet['secretKey'] = decrypt_text(wallet['secretKey'])
         return self._retrieve_data("wallets", key)
 
     def send_data_wallet_checker_queue(self, key, value):
@@ -95,14 +101,18 @@ class MySQLDatabase:
         else:
             return {}
 
-    def _delete_row(self, table_name, key):
-        query = f"DELETE FROM {table_name} WHERE `key` = :key"
+    def _delete_row(self, table_name, key, col='key'):
+        query = f"DELETE FROM {table_name} WHERE `{col}` = :key"
         self._execute_with_retries(query, {"key": key})
     def send_data_items(self, id, value):
         seller = value.pop('seller', None)
         tags = value.pop('tags', None)
-        data = value
+        data = copy.deepcopy(value)
 
+        encrypted_stock_list = []
+        for product_key in data['stockList']:
+            encrypted_stock_list.append(encrypt_text(product_key))
+        data['stockList'] = encrypted_stock_list
         
         self._send_data_with_merge("items", id, data, seller=seller, tags=tags)
     def send_data_txns(self, id, value):
@@ -112,8 +122,12 @@ class MySQLDatabase:
         self._send_data_with_merge("txns", id, data, item_id=item_id, buyer=buyer)
 
     def retrieve_data_items(self, id):
-        return self._retrieve_data_with_merge("items", id)
-    
+        item = copy.deepcopy(self._retrieve_data_with_merge("items", id))
+        decrypted_stock_list = []
+        for product_key in item['stockList']:
+            decrypted_stock_list.append(decrypt_text(product_key))
+        item['stockList'] = decrypted_stock_list
+        return item
     def retrieve_data_txns(self, id):
         return self._retrieve_data_with_merge("txns", id)
     

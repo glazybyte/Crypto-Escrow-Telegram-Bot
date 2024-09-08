@@ -377,6 +377,8 @@ class GlobalState:
             if seller_item_ids[i] in self.state['items']:
                 self.state['items'][seller_item_ids[i]]['__last_access'] = int(time.time())
                 item = self.state['items'][seller_item_ids[i]]
+                if item['toggle'] == 'disabled':
+                    continue
                 item.pop('id', None)
                 item['item_id'] = seller_item_ids[i]
                 cached_items.append(item)
@@ -390,6 +392,8 @@ class GlobalState:
                     futures.append(future)
                 for i in range(len(futures)):
                     item = futures[i].result()
+                    if item['toggle'] == 'disabled':
+                        continue
                     item['__last_access'] = int(time.time())
                     item.pop('id', None)
                     item['item_id'] = item_id_not_in_cache[i]
@@ -519,7 +523,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
             'escrow_limit': len(base['escrow'])/escrow_limit,
             'items_limit': len(base['items'])/items_limit
         }
-    if ussage_percentage['user_data_limit'] <0.95 and ussage_percentage['tx_limit'] <0.95 and ussage_percentage['escrow_limit'] <0.95 and ussage_percentage['items_limit'] <0.95:
+    if ussage_percentage['user_data_limit'] < 0.95 and ussage_percentage['tx_limit'] <0.95 and ussage_percentage['escrow_limit'] <0.95 and ussage_percentage['items_limit'] <0.95:
         print('Deep clean not needed')
         bot_state.add_timeout(60*60, 'hourly_cleanup', 'none', True)
         context = 'return'

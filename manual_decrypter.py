@@ -1,10 +1,16 @@
+"""
+This can help when something goes wrong while releasing of payment automatically.
+
+
+"""
+
 import dotenv
 
 from imports.utils import decrypt_text
 
 # Example usage with your wallet data
 dotenv.load_dotenv()
-wallet = {"tradeId": "TRADE458174374973", "memonic": "viyB4GHCuolDuTBBHohafaZH8gOTjmPJBUbK2EFUdhjiqJXyXQdXyey1xX0Y4rpuArqQct31LOgUCe0oRaV+UHhuB1Q+9BVnB8uaYfuo6ejhju5Abxlh0mwNPwGRdtQx", "secretKey": "154eA9mQKmlo9hVfRKOwz3ixhSv5dI8vD4pwGQ0Bzv9okkkEVot4pb5LmxKBFcBlKCsNrbnwQk/zFu6ll7hAyEWpyATM3PQIUJjsDxGUbBA=", "publicKey": "D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2", "currency": "DOGE", "tradeType": "escrow", "__time_added": 1725725938}
+wallet = {"tradeId": "TXID697326283290", "memonic": "CZ3ZZtP+wjTK2ROT91aqqbe9hjxGK7dYK0gGOa2jCjLwZj1CXYLZYklU2+2BqZ9/4dJvR8o2LRJCf0c8sZ5JROnZlMpspy8uij9dafhNdGOlQNtw5mEl0A4z+bE=", "secretKey": "lq4RjrWXt5YWye/zn+YX6m7uCgUD/DzWRhFPmZ4mw2ZSKOi8WVPnBxtgTm7MCwwasQeJksY9up0+RSsWj0V2F38JvcKrjgdlERLasn7uIIM=", "publicKey": "FD2DPpy5Rm7oxyHPonH9yA4R5HJwLQFF5i1TQQKDVUM1", "currency": "SOL", "tradeType": "futures", "__time_added": 1725771844}
 
 print(decrypt_text(wallet['memonic']))
 print(decrypt_text(wallet['secretKey']))
