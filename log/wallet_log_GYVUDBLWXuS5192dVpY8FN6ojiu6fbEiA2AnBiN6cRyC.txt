@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID199943896947", "memonic": "room stand ethics aim outside nephew wrap shoulder august project order detail", "secretKey": "bb61277f87734f29292620db5290d9afe9b5939cab32e0c05b558d5b3c68521f", "publicKey": "GYVUDBLWXuS5192dVpY8FN6ojiu6fbEiA2AnBiN6cRyC", "currency": "SOL", "tradeType": "futures"}

@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID344796708547", "memonic": "need normal net purity dance zoo honey slab exit plunge achieve anxiety", "secretKey": "0a13d3382c59a845d62c6a059b509c280bad9b6ce5cba527bf83b034a7385574", "publicKey": "567sYFFyZ7hTc9SHLFD2zLohMNYrQYD8D5hAXKRixKPV", "currency": "SOL", "tradeType": "buy"}

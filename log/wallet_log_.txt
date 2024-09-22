@@ -1,2 +1,0 @@
-TX response: {"jsonrpc":"2.0","result":"2q8hV8DBGC8T1zNe8MtfjvVMWGn4yg8vyDoKjtPcK8xdJapgR5kRqURH3DGVusisMEJttdpEgTtbptA7t3ahT2Wg","id":0}
-Transaction sent: https://solscan.io/tx/2q8hV8DBGC8T1zNe8MtfjvVMWGn4yg8vyDoKjtPcK8xdJapgR5kRqURH3DGVusisMEJttdpEgTtbptA7t3ahT2Wg

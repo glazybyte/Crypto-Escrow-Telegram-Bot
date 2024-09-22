@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID369077975855", "memonic": "gather crystal believe render proud gravity segment below question cube calm tray", "secretKey": "87ec742a320e8949b660d7a9b2b6cdb523b2d8070d9e979ea378d63c0d808417", "publicKey": "3RZAg7xzEYryL4s9sXMbrJER15LuCQdftzZnBcaFyWpf", "currency": "SOL", "tradeType": "buy"}

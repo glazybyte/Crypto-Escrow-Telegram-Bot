@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID444740153295", "memonic": "medal cook diagram clip uncover chest open false cattle assault humor edge", "secretKey": "66866bfa5831aebf0ca5fccebb634200e6ebf7833829d8275c1a27e83aa58391", "publicKey": "7hg6uYbByDF18DwLxdBZQvoc5561TqCFaLeyH2qPxAwV", "currency": "SOL", "tradeType": "futures"}

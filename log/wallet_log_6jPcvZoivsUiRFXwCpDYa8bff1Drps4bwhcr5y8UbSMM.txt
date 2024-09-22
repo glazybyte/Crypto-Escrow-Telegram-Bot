@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID767987776693", "memonic": "spell interest swing acquire cereal canoe pig any blush silk enemy sound", "secretKey": "6e2ea7ee20fa02aa549dd2bda80c8abd68d11fcafd73f6ef2d8508389ae9d669", "publicKey": "6jPcvZoivsUiRFXwCpDYa8bff1Drps4bwhcr5y8UbSMM", "currency": "SOL", "tradeType": "buy"}

@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID917543723326", "memonic": "eye pear basic woman sibling people dust return pond cheese moral sunset", "secretKey": "a37f48f0d2427ebe2967a9ac467dfa58ed8287b17b01d01d7ab5882d0d2ec9ba", "publicKey": "5693dRNQXL8d5U1WRMpnTEqXb71WQ9x3gpfGgeRKGydh", "currency": "SOL", "tradeType": "futures", "__time_added": 1725617952}

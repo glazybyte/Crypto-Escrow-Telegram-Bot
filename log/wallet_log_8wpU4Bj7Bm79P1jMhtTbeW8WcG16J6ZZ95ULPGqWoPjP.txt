@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID669866633187", "memonic": "amateur leave price cable feel vessel fat clog curtain success upper next", "secretKey": "dbd8877e42e304c9c4de63656d62993603fedae1a66bab63e6b5d4172d9d8853", "publicKey": "8wpU4Bj7Bm79P1jMhtTbeW8WcG16J6ZZ95ULPGqWoPjP", "currency": "SOL", "tradeType": "buy"}

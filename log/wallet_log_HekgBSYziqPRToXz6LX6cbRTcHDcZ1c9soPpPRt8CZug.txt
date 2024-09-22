@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID099482946312", "memonic": "cupboard act fine glance always tide air cinnamon sight stand oval must", "secretKey": "6087a5dbc4d50f85e7be98e5c266fe95d57be77fe14c10f30531452b57e9da54", "publicKey": "HekgBSYziqPRToXz6LX6cbRTcHDcZ1c9soPpPRt8CZug", "currency": "SOL", "tradeType": "buy"}

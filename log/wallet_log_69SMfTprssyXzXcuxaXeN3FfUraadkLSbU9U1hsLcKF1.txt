@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID913807818372", "memonic": "badge surprise include duck expose mass fiction north scan scene glare comfort", "secretKey": "2ce5ad212c0afbd21acd5f06629767ee2a5ff86877e1360af5e16186ddb5f0bc", "publicKey": "69SMfTprssyXzXcuxaXeN3FfUraadkLSbU9U1hsLcKF1", "currency": "SOL", "tradeType": "buy"}

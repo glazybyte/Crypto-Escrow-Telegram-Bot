@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID215910656101", "memonic": "position shallow zoo bubble south save super try quarter forward reduce vault", "secretKey": "07b04520e7cb3a879425a0a3ba6f4442c6909f4959afdcea25f6660b1a983951", "publicKey": "5WorRevE72PnZaRspnEXwZLHW6cc9FQWnUVp2tJm918L", "currency": "SOL", "tradeType": "futures", "__time_added": 1725616087}

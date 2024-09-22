@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID215164217561", "memonic": "funny strong pyramid misery hour spice auto art creek embark giggle tent", "secretKey": "7b67ce40e7c36dd0ced0c720128ccc953e552c5f6993069f57d6de31dffc36ef", "publicKey": "83waEPMxpvKKYSiZbKkD235x1FpEp6XXxvJsit5izSrR", "currency": "SOL", "tradeType": "futures"}

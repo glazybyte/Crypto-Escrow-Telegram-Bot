@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID938360855004", "memonic": "toilet zero cousin duck guitar cluster typical quiz boy service hedgehog net", "secretKey": "9e4a726b9f3588c681c589925c74f950a26a3825c39bae03fabd241c34ef2e35", "publicKey": "7B562C5AjCrsZsGqRgjjUNcC7haQgpPfmfkqWabrtXhi", "currency": "SOL", "tradeType": "futures"}

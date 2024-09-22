@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID300251247848", "memonic": "current crisp rely frozen electric orbit omit promote ability explain fire sport", "secretKey": "3d7381ddf2f7e87c3839c25a83305e5cc5afceaf263ce54b865e9834a26b7005", "publicKey": "2HQZZnuSVJ72pzxNoerHdnJ4ynTTmBH7Kmk1B7mq2aEi", "currency": "SOL", "tradeType": "futures", "__last_access": 1725530366}

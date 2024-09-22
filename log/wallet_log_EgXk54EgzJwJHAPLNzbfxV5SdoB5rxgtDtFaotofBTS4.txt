@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID515187858701", "memonic": "inherit boss helmet post version knife siren vehicle artwork nature there teach", "secretKey": "9cb039c491127244d53cbec8944da5199afc7b5243a4e6ae8100898b7e8283f1", "publicKey": "EgXk54EgzJwJHAPLNzbfxV5SdoB5rxgtDtFaotofBTS4", "currency": "SOL", "tradeType": "buy"}

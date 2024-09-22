@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID252126089589", "memonic": "earn travel electric key diet eight extend fade rose oven engage age", "secretKey": "bcda0473edfb62d128782f342b0f59a4507c5a94ce703e8d28bfd29e92c90d62", "publicKey": "MD6kAPfK9YoLbMei47fupUguBtKcmJ3aBT6rr1QKcEg", "currency": "SOL", "tradeType": "buy"}

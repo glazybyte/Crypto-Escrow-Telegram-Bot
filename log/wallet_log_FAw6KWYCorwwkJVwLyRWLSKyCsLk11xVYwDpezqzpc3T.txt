@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID601380069311", "memonic": "they unable style sheriff develop drop short refuse lock noodle chat nurse", "secretKey": "7a94459afa242cba99e9a6087df53ed6efc7797d392b727ad0737f2af8f359e5", "publicKey": "FAw6KWYCorwwkJVwLyRWLSKyCsLk11xVYwDpezqzpc3T", "currency": "SOL", "tradeType": "futures", "__last_access": 1725530894}

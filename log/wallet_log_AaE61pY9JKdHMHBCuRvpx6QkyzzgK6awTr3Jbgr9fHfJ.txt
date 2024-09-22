@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID498290010645", "memonic": "grit way toward dutch owner simple normal cry gauge harsh network faculty", "secretKey": "d5f6257ecf491f807853bf3cd1a944a428926f96c68b3e2c75f33d50a9447932", "publicKey": "AaE61pY9JKdHMHBCuRvpx6QkyzzgK6awTr3Jbgr9fHfJ", "currency": "SOL", "tradeType": "futures"}

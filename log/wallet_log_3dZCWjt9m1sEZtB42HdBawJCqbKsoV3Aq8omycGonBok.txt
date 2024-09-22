@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID753095853255", "memonic": "wine divide receive alien crowd artefact outdoor glance intact draw scheme lounge", "secretKey": "f6d8e19d0f92bda2e2d58c4a7c0b0c71676ed2661bd895d4faf6f2b925623673", "publicKey": "3dZCWjt9m1sEZtB42HdBawJCqbKsoV3Aq8omycGonBok", "currency": "SOL", "tradeType": "futures"}

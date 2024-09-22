@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID656319217848", "memonic": "illness caught window manage tiny excuse approve artist wait enough stumble tackle", "secretKey": "b47ec55014bd22bd78fb20950db45064549242fc06535c982f0fff882c1a5c56", "publicKey": "7nAu76tDNfAwhuoKNeADcYy4HJxcRnKYGXbyfvVaq9Uz", "currency": "SOL", "tradeType": "buy"}

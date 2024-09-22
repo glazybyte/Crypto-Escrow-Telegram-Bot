@@ -1,5 +1,0 @@
-------Log Entry Open-------
-[19Sep24::00:30:53] Wallet generation Successful!
-{"tradeId": "TXID048765843821", "memonic": "RIIicouvgOf06r2sKqPHKLMI5UFvG/554JSAdwAc+fBpmTjpgWMhEYq1FlU2o5OkkmYiVhaboUPsW8/TMbgQj+I1ZOKd9nu6EnrrAnpmAETbHggHzeiL9Cl97nw4ELSxfx1O", "secretKey": "ma5U0BidXuz+HBPGX90UUexHY47tmDx4ULh0c1i1LtvJ9h9Vy65DnnP5QkBbpk87zNRo17UAb22jfTbYFkqMbqfRQCw2CLOMiMGIUCgHgDY=", "publicKey": "GTynJnHVSzh8X7KQsXw5XP7P9iv4wyqvPdeioujekGGd", "currency": "SOL", "tradeType": "futures", "__time_added": 1726686053}
-------Log Entry Close-------
-
