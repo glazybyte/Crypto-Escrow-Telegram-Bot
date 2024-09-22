@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID152963857957", "memonic": "elegant mind easy lake famous clay draw before public view casino rough", "secretKey": "8c20c79864da0721e773df190877367de698a730859b55d72c4f06104682ef08", "publicKey": "EaSm81wukU5T7iSoQaLytzhbqzA8mS8LTrLBHXkunpXE", "currency": "SOL", "tradeType": "buy"}

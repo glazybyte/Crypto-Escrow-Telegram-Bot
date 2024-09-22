@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID927862835550", "memonic": "essay general vacuum giant royal invite until run dilemma concert tooth knee", "secretKey": "7c144db4872cc95899e14cfa955f203978951476b14b05ed89d4b14bac53bf80", "publicKey": "GrBFBeqokbfjgNXBAyfyaiZsq5mc2gWA35UFHMfKrGAT", "currency": "SOL", "tradeType": "buy"}

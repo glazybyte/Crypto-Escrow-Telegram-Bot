@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID153279557365", "memonic": "action dry zone evil near broccoli record clog stove choice round moon", "secretKey": "b17c970d78f47c7203853815436d53b6b018574a639d7009aabfd1216d536bb7", "publicKey": "3Au4HSJLwUkHjijcCQYoitNs2iQ6D3ZK4ksePyqcUY58", "currency": "SOL", "tradeType": "buy"}

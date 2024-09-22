@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID856005002090", "memonic": "peanut other nut rebuild unfair found pool excuse devote provide unfold latin", "secretKey": "ee9f3bcf5914643f695cb42361382db663f683ed0bb4d59a57c8f2b74334ddc0", "publicKey": "DvUCseJebweiDZ41GaEFE1AVXBCA6dEVeajzwALYaTPT", "currency": "SOL", "tradeType": "buy"}

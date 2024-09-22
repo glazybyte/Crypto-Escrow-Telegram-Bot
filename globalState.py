@@ -35,20 +35,24 @@ class GlobalState:
                 database= database
             )
         
-    def set_var(self, var: str, new_value: dict):
+    def set_var(self, var: str, new_value: dict, lockBypass=False):
+        self.acquire_lock('escrow', var, lockBypass)
         self.state['escrow'][var] = new_value
         self.state['escrow'][var]['__last_access'] = int(time.time())
         if self.enabledb:
             self.database.send_data_trade(var, new_value)
-
-    def get_var(self, var: str):
+        self.unlockvar(var, lockBypass)
+    def get_var(self, var: str, lockBypass=False):
+        self.acquire_lock('escrow', var, lockBypass)
         if self.enabledb:
             if var in self.state:
                 print(f'cache call for {var}')
+                self.unlockvar(var, lockBypass)
                 return self.state['escrow'].get(var)
             else:
                 self.state['escrow'][var] = self.database.retrieve_data_trade(var)
         self.state['escrow'][var]['__last_access'] = int(time.time())
+        self.unlockvar(var, lockBypass)
         return self.state['escrow'].get(var)
 
     def lockUser(self, user: str):
@@ -75,16 +79,20 @@ class GlobalState:
                 self.state["lockmanager"]['var_locker'][name] = True
                 return True
 
-    def unlockvar(self, name):
+    def unlockvar(self, name, lockBypass=False):
+        if lockBypass:
+            return
         self.state["lockmanager"]['var_locker'].pop(name, None)
 
-    def is_var_locked(self, name):
+    def is_var_locked(self, name, lockBypass=False):
         return self.state["lockmanager"]['var_locker'].get(name, False)
     
-    def acquire_lock(self, main_var, name):
+    def acquire_lock(self, main_var, name, lockBypass=False):
         is_main_var_lock = True
         got_value_lock = False
         should_continue = True
+        if lockBypass:
+            return True
         while should_continue:
             if is_main_var_lock != False:
                 is_main_var_lock = self.is_var_locked(main_var)
@@ -95,7 +103,9 @@ class GlobalState:
                 continue
             should_continue=False
             break
-    def getUser(self, userid:str):
+        return True
+    
+    def getUser(self, userid:str, lockBypass=False):
         template = {
             "currentTrade": "",
             "shopName": "none",
@@ -104,12 +114,12 @@ class GlobalState:
             "shopItems": [],
             "userStatus": "enabled"
         }
-        self.acquire_lock('user_data', userid)
+        self.acquire_lock('user_data', userid, lockBypass)
 
         if self.enabledb:
             if userid in self.state["user_data"]:
                 print(f'cache call for {userid}')
-                self.unlockvar(userid)
+                self.unlockvar(userid, lockBypass)
                 return self.state["user_data"].get(userid,template)
             else:
                 rrun = self.database.retrieve_data_user_trade(userid)
@@ -123,26 +133,28 @@ class GlobalState:
             user['shopItems'] = []
             user['shopName'] = user['shopDesc'] = 'none'
             user['shopStatus'] = 'enabled'
-        self.unlockvar(userid)
+        self.unlockvar(userid, lockBypass)
         return self.state["user_data"].get(userid, template)
     
-    def setUser(self, userid: str, data):
-        self.acquire_lock('user_data', userid)
+    def setUser(self, userid: str, data, lockBypass=False):
+        self.acquire_lock('user_data', userid, lockBypass)
         self.state["user_data"][userid] = data
         self.state['user_data'][userid]['__last_access'] = int(time.time())
         if self.enabledb:
             self.database.send_data_user_trade(userid, data)
-        self.unlockvar(userid)
-    def setUserTrade(self, userid: str, id: str):
-        user = self.getUser(userid)
+        self.unlockvar(userid, lockBypass)
+    
+    def setUserTrade(self, userid: str, id: str, lockBypass=False):
+        user = self.getUser(userid, lockBypass)
         user['currentTrade'] = id
-        self.setUser(userid, user)
+        self.setUser(userid, user, lockBypass)
 
-    def getUserTrade(self, userid: str):
+    def getUserTrade(self, userid: str, lockBypass=False):
         user = self.getUser(userid)
         return user['currentTrade'];
 
-    def set_waiting_for_input(self, chat_id: str, context, input_type = 'text', cmd='none'):
+    def set_waiting_for_input(self, chat_id: str, context, input_type = 'text', cmd='none', lockBypass=False):
+        self.acquire_lock('waiting_for_input', chat_id, lockBypass)
         caller_frame = inspect.stack()[1]
         chat_id = str(chat_id)
         if input_type == 'button':
@@ -163,8 +175,9 @@ class GlobalState:
         else:
             self.state["waiting_for_input"][chat_id] = {'context': context, 'input_type': input_type, 'cmd': cmd, 'user': chat_id}
         self.state['waiting_for_input'][chat_id]['__last_access'] = int(time.time())
+        self.unlockvar(chat_id, lockBypass)
             
-    def get_waiting_for_input_context(self, chat_id: str):
+    def get_waiting_for_input_context(self, chat_id: str, lockBypass=False):
         chat_id = str(chat_id)
         if chat_id in self.state["waiting_for_input"]:
             res = self.state["waiting_for_input"].get(chat_id, {})
@@ -172,7 +185,8 @@ class GlobalState:
             return res['context']
         else:
             return False
-    def get_waiting_for_input_user(self, chat_id: str):
+    
+    def get_waiting_for_input_user(self, chat_id: str, lockBypass=False):
         chat_id = str(chat_id)
         if chat_id in self.state["waiting_for_input"]:
             res = self.state["waiting_for_input"].get(chat_id, {})
@@ -180,7 +194,8 @@ class GlobalState:
             return res['user']
         else:
             return False
-    def get_waiting_for_input_type(self, chat_id: str):
+    
+    def get_waiting_for_input_type(self, chat_id: str, lockBypass=False):
         chat_id = str(chat_id)
         if chat_id in self.state["waiting_for_input"]:
             res = self.state["waiting_for_input"].get(chat_id, {})
@@ -188,7 +203,8 @@ class GlobalState:
             return res['input_type']
         else:
             return False
-    def get_waiting_for_cmd(self, chat_id: str):
+    
+    def get_waiting_for_cmd(self, chat_id: str, lockBypass=False):
         chat_id = str(chat_id)
         if chat_id in self.state["waiting_for_input"]:
             res = self.state["waiting_for_input"].get(chat_id, {})
@@ -200,8 +216,8 @@ class GlobalState:
     def clear_waiting_for_input(self, chat_id: str):
         self.state["waiting_for_input"].pop(chat_id, None)
     
-    def save_wallet_info(self, tradeId: str, memonic: str, secretKey: str, publicKey: str, currency: str, tradeType='escrow'):
-        self.acquire_lock('wallets', tradeId)
+    def save_wallet_info(self, tradeId: str, memonic: str, secretKey: str, publicKey: str, currency: str, tradeType='escrow', lockBypass=False):
+        self.acquire_lock('wallets', tradeId, lockBypass)
         self.state["wallets"][tradeId] = {
             "tradeId": tradeId,
             "memonic": memonic,
@@ -218,23 +234,22 @@ class GlobalState:
         log_message("Wallet generation Successful!\n"+json.dumps(wallet), publicKey)
         if self.enabledb:
             self.database.send_data_wallets(tradeId, self.state["wallets"][tradeId])
-        self.unlockvar(tradeId)
+        self.unlockvar(tradeId, lockBypass)
         
-    
-    def get_wallet_info(self, tradeId: str):
-        self.acquire_lock('wallets', tradeId)
+    def get_wallet_info(self, tradeId: str, lockBypass=False):
+        self.acquire_lock('wallets', tradeId, lockBypass)
         if self.enabledb:
             if tradeId in self.state["wallets"]:
                 print(f'cache call for {tradeId}')
-                self.unlockvar(tradeId)
+                self.unlockvar(tradeId, lockBypass)
                 return self.state["wallets"][tradeId] 
             else:
                 self.state["wallets"][tradeId] = self.database.retrieve_data_wallets(tradeId)
         #self.state['wallets'][tradeId]['__last_access'] = int(time.time())
-        self.unlockvar(tradeId)
+        self.unlockvar(tradeId, lockBypass)
         return self.state["wallets"][tradeId]
     
-    def add_address_to_check_queue(self,publicKey: str, tradeId: str,  currency: str):
+    def add_address_to_check_queue(self,publicKey: str, tradeId: str,  currency: str, lockBypass=False):
         self.state["wallet_checker_queue"][publicKey] = {
             "tradeId":tradeId,
             "currency": currency,
@@ -244,7 +259,7 @@ class GlobalState:
             self.database.send_data_wallet_checker_queue(publicKey, self.state["wallet_checker_queue"][publicKey])
         return
     
-    def get_address_info(self,publicKey: str):
+    def get_address_info(self,publicKey: str, lockBypass=False):
         if self.enabledb:
             if publicKey in self.state["wallet_checker_queue"]:
                 print(f'cache call for {publicKey}')
@@ -264,38 +279,39 @@ class GlobalState:
             self.database.delete_wallet_checker_queue(publicKey)
         self.state["wallet_checker_queue"].pop(publicKey, None)
 
-    def add_item(self,item_id: str, item_details: str):
-        self.acquire_lock('items', item_id)
+    def add_item(self,item_id: str, item_details: str, lockBypass=False):
+        self.acquire_lock('items', item_id, lockBypass)
         self.state["items"][item_id] = item_details
         self.state["items"][item_id]['__last_access'] = int(time.time())
         user = self.getUser(item_details['seller'])
         
         if item_id not in user["shopItems"]:
             user["shopItems"].append(item_id)
-        self.setUser(item_details['seller'], user)
+        self.setUser(item_details['seller'], user, lockBypass)
         if self.enabledb:
             self.database.send_data_items(item_id, copy.deepcopy(self.state["items"][item_id]))
-        self.unlockvar(item_id)
+        self.unlockvar(item_id, lockBypass)
         return
     
-    def get_item_details(self, item_id: str):
-        self.acquire_lock('items', item_id)
+    def get_item_details(self, item_id: str, lockBypass=False):
+        self.acquire_lock('items', item_id, lockBypass)
         if self.enabledb:
             if item_id in self.state["items"]:
                 print(f'cache call for Item ID {item_id}')
-                self.unlockvar(item_id)
+                self.unlockvar(item_id, lockBypass)
                 return self.state["items"][item_id]
             else:
 
                 self.state["items"][item_id] = self.database.retrieve_data_items(item_id)
         if item_id in self.state["items"]:
             self.state["items"][item_id]['__last_access'] = int(time.time())
-            self.unlockvar(item_id)
+            self.unlockvar(item_id, lockBypass)
             return self.state["items"][item_id]
         else:
             return False
         
-    def remove_item(self, item_id):
+    def remove_item(self, item_id, lockBypass=False):
+        self.acquire_lock('items', item_id, lockBypass)
         if self.enabledb:
             self.database.delete_item(item_id)
         item_details = self.get_item_details(item_id)
@@ -304,26 +320,27 @@ class GlobalState:
             user["shopItems"].pop(item_id, None)
         self.setUser(item_details['seller'], user)
         self.state["items"].pop(item_id, None)
+        self.unlockvar(item_id, lockBypass)
 
-    def set_tx_var(self, tx_id: str, new_value: dict):
-        self.acquire_lock('txs', tx_id)
+    def set_tx_var(self, tx_id: str, new_value: dict, lockBypass=False):
+        self.acquire_lock('txs', tx_id, lockBypass)
         self.state['txs'][tx_id] = new_value
         self.state['txs'][tx_id]['__last_access'] = int(time.time())
         if self.enabledb:
             self.database.send_data_txns(tx_id, copy.deepcopy(new_value))
-        self.unlockvar(tx_id)
+        self.unlockvar(tx_id, lockBypass)
 
-    def get_tx_var(self, tx_id: str):
-        self.acquire_lock('txs', tx_id)
+    def get_tx_var(self, tx_id: str, lockBypass=False):
+        self.acquire_lock('txs', tx_id, lockBypass)
         if self.enabledb:
             if tx_id in self.state['txs']:
                 print(f'cache call for TXID {tx_id}')
                 self.state['txs'][tx_id]['__last_access'] = int(time.time())
-                self.unlockvar(tx_id)
+                self.unlockvar(tx_id, lockBypass)
                 return self.state['txs'].get(tx_id)
             else:
                 self.state['txs'][tx_id] = self.database.retrieve_data_txns(tx_id)
-        self.unlockvar(tx_id)
+        self.unlockvar(tx_id, lockBypass)
         return self.state['txs'].get(tx_id)
 
     def add_interval(self, reoccur_after, context, cmd):
@@ -371,36 +388,21 @@ class GlobalState:
     
     def get_seller_items(self, seller_id: str):
         seller_item_ids = copy.deepcopy(self.getUser(seller_id)['shopItems'])
-        item_id_not_in_cache = []
-        cached_items = []
-        for i in range(len(seller_item_ids)):
-            if seller_item_ids[i] in self.state['items']:
-                self.state['items'][seller_item_ids[i]]['__last_access'] = int(time.time())
-                item = self.state['items'][seller_item_ids[i]]
+        all_seller_items = []
+        with ThreadPoolExecutor() as executor:
+            futures = []
+            for item_id in seller_item_ids:
+                future = executor.submit(self.get_item_details, item_id)
+                futures.append(future)
+            for future in futures:
+                item = future.result()
                 if item['toggle'] == 'disabled':
                     continue
-                item.pop('id', None)
-                item['item_id'] = seller_item_ids[i]
-                cached_items.append(item)
-            else:
-                item_id_not_in_cache.append(seller_item_ids[i])
-        if self.enabledb:
-            with ThreadPoolExecutor() as executor:
-                futures = []
-                for item_id in item_id_not_in_cache:
-                    future = executor.submit(self.database.retrieve_data_items, item_id)
-                    futures.append(future)
-                for i in range(len(futures)):
-                    item = futures[i].result()
-                    if item['toggle'] == 'disabled':
-                        continue
-                    item['__last_access'] = int(time.time())
-                    item.pop('id', None)
-                    item['item_id'] = item_id_not_in_cache[i]
-                    self.state['items'][item_id_not_in_cache[i]] = item
-                    cached_items.append(item)
-        return cached_items
-            
+                if 'id' in item:
+                    item['item_id'] = item.pop('id', None)
+                all_seller_items.append(item)
+        return all_seller_items
+
 def timeout_up(context, bot, bot_state: GlobalState):
     
     user_data_limit = 20_000
@@ -441,7 +443,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
                 keys_to_be_poped.append(tx_id)
         
         pop_list(keys_to_be_poped, base['txs'])
-        
+        print('step1 of cleaner completed')
         keys_to_be_poped = []
 
         
@@ -450,7 +452,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
                 keys_to_be_poped.append(item_id)
         
         pop_list(keys_to_be_poped, base['items'])
-        
+        print('step2 of cleaner completed')
         keys_to_be_poped = []
 
         
@@ -461,7 +463,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
         pop_list(keys_to_be_poped, base['user_data'])
        
         keys_to_be_poped = []
-
+        print('step3 of cleaner completed')
        
         for publicKey, info in base['wallet_checker_queue'].items():
             if (int(time.time())-info['__time_added']) >= 2*60*60:
@@ -473,7 +475,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
         keys_to_be_poped = []
         
         escrow_to_be_closed = []
-
+        print('step4 of cleaner completed')
        
         for escrow_id, escrow in base['escrow'].items():
             if escrow['status'].startswith('close'):
@@ -484,25 +486,25 @@ def timeout_up(context, bot, bot_state: GlobalState):
         for escrow_id in escrow_to_be_closed:
             escrow = base['escrow'][escrow_id]
             keys_to_be_poped.append(escrow_id)
-            close_trade(bot_state, escrow_id, 'close[inactivity]')
-            try:
-                # bot.send_message(
-                #     chat_id=escrow["buyer"], 
-                #     parse_mode=ParseMode.MARKDOWN,
-                #     text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
-                # )
-                pass
-            except TelegramError as e:
-                pass
-            try:
-                # bot.send_message(
-                #     chat_id=escrow["seller"], 
-                #     parse_mode=ParseMode.MARKDOWN,
-                #     text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
-                # )
-                pass
-            except TelegramError as e:
-                pass
+            close_trade(bot_state, escrow_id, 'close[inactivity]', True)
+            # try:
+            #     bot.send_message(
+            #         chat_id=escrow["buyer"], 
+            #         parse_mode=ParseMode.MARKDOWN,
+            #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
+            #     )
+                
+            # except TelegramError as e:
+            #     """"""
+            # try:
+            #     bot.send_message(
+            #         chat_id=escrow["seller"], 
+            #         parse_mode=ParseMode.MARKDOWN,
+            #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
+            #     )
+                
+            # except TelegramError as e:
+            #     """"""
         
         pop_list(keys_to_be_poped, base['escrow'])
         
@@ -513,7 +515,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
                 keys_to_be_poped.append(action_id)
         
         pop_list(keys_to_be_poped, base['wallets'])
-
+        print('step5 of cleaner completed')
         print('Cleaner Finished')
 
 

@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TRADE821841947921", "memonic": "avocado once congress valley unknown photo bring regret deal young coach drop", "secretKey": "25ea446b905328e18ac4e823e3816b883f41639ec7263c6e03f8f388debb0e37", "publicKey": "CCT11tmZE1DW7xtwp6cj73UF5TxQ8U3cVjdh5rjVyULT", "currency": "SOL"}

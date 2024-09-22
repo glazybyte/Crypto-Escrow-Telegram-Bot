@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID406247878291", "memonic": "cram flat elder stamp senior process lumber dry dog rotate insect energy", "secretKey": "e9fcccd1d3316827fbc28234f225b4fec469b59f30cbda280c65e977bd239f52", "publicKey": "8wkszxLLybRMK935fPLSiWicvPvo2uMkKQfmYDEN8wNx", "currency": "SOL", "tradeType": "futures", "__time_added": 1725615968}

@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID283905008602", "memonic": "nasty protect post sting purity first prevent type view again mushroom choice", "secretKey": "6509e7029cb18a2d9aae6ef3c16f652ecb61042d1e0a0225d17bd80f6dd7ca96", "publicKey": "C1pbGQ3YyhTFD5V6kBj3kPXW2wQcwe7uqy9xoLMJPMP7", "currency": "SOL", "tradeType": "buy"}

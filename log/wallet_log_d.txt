@@ -1,0 +1,4 @@
+Wallet generation Successful!
+{"tradeId": "d", "memonic": "d", "secretKey": "d", "publicKey": "d", "currency": "d", "tradeType": "escrow"}
+Wallet generation Successful!
+{"tradeId": "d", "memonic": "d", "secretKey": "d", "publicKey": "d", "currency": "d", "tradeType": "escrow"}

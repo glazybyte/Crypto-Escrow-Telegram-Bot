@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID594793182794", "memonic": "adjust spider perfect now alpha stumble wagon shed slender allow fancy lawn", "secretKey": "a3d528a659cda1c1e23fcf4d3dc6a9b73fb99683f296564e5485aa014f03401c", "publicKey": "7nHYa1pAo5jKMEgxSJjrdoqreZW13simGV7cFLYbC1yw", "currency": "SOL", "tradeType": "buy"}

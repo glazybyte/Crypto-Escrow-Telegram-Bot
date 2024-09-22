@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID536724370932", "memonic": "begin flower mesh example sauce include install fade extra festival ankle ready", "secretKey": "7de55c3594c0889de71464c946a8366db53e3b031f8c0dfd6fbec2bd0009d1b1", "publicKey": "CZFwKuFqAnToEfh4mxN7NnZ7vFujZznuYuZKQtLiLKf", "currency": "SOL", "tradeType": "buy"}

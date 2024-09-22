@@ -1,0 +1,15 @@
+Wallet generation Successful!
+{"tradeId": "TRADE163037528569", "memonic": "oQHEz+ccEo9M0LGxFo0LDXy+XALs3zc9mKNq1d510KaEx9d7+Az7OpbmwnYwbzJ/Pu/zMLaZCz41juy3Iz0iZzb6zFen3eAQG/NmZ0eH0ClRloR5W8qxZtuVUSDe87/HOw==", "secretKey": "GzJQpD2GAvJBWNiCoKCts3r1TII+IgAsOKO4TrOoQ6VkCm3+dyxRIkEnxb+hN+xBlpIGKTBnlaRleZ/vpmfCIn9BE5JVIFJJdeBLcr+YsxU=", "publicKey": "EUC2F9nXvxf3mHyUGrfoLtaiQJpPyMKZo4YymZKRW441", "currency": "SOL", "tradeType": "escrow", "__time_added": 1725710968}
+Initiating transaction for Trade ID: TRADE163037528569
+Sender: EUC2F9nXvxf3mHyUGrfoLtaiQJpPyMKZo4YymZKRW441, Recipient: E28q42iKsYxQS6LsnXuqAC3U6oQxS3dqDG8bNNK124Na, Amount: 0.002 USDT
+An error occurred: Failed to fetch data from RPC endpoint. Error -32002: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.
+Traceback (most recent call last):
+  File "D:\cryptoEscrow\imports\simple_sol_to_sol_sender.py", line 45, in send_transaction
+    result = client.send_transaction(transaction)
+  File "C:\Users\DV\AppData\Local\Programs\Python\Python39\lib\site-packages\solathon\client.py", line 798, in send_transaction
+    return self.build_and_send_request(
+  File "C:\Users\DV\AppData\Local\Programs\Python\Python39\lib\site-packages\solathon\client.py", line 744, in build_and_send_request
+    raise RPCRequestError(
+solathon.utils.RPCRequestError: Failed to fetch data from RPC endpoint. Error -32002: Transaction simulation failed: Attempt to debit an account but found no record of a prior credit.
+
+Transaction response: None

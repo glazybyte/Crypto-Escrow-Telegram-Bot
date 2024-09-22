@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID617688362481", "memonic": "liberty sniff bunker sentence flavor clarify engage model brief auction region twin", "secretKey": "f941222a20e518e93b43fd095d716474fd9544b66523cd8b8a0cb09bb8814888", "publicKey": "5WReqX5fJGy7BmxzmSMH1QA9QwvjBwshTAFvFf8fbpvw", "currency": "SOL", "tradeType": "buy"}

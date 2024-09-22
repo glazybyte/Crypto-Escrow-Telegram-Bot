@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID864570320131", "memonic": "crack gauge guitar convince trouble video seven eternal skull install below output", "secretKey": "7a8fbb2b0aec83855e5b9fcfd76246cb934da4ec4f5666096fa3c361b505cf75", "publicKey": "Dv65P4hvFQcTkUieQKCXVTtfL3sCFtW6pxoJYV9Tsiv6", "currency": "SOL", "tradeType": "buy"}

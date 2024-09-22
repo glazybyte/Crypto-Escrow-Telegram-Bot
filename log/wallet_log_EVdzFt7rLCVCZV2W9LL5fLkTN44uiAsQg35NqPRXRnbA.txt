@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID989899693756", "memonic": "usage sustain wish survey film december electric split denial mouse cause summer", "secretKey": "c7becfbca8b963d9ae3b13629000446e824aaffa3a9ceb81a0057b7f12f2a272", "publicKey": "EVdzFt7rLCVCZV2W9LL5fLkTN44uiAsQg35NqPRXRnbA", "currency": "SOL", "tradeType": "buy"}

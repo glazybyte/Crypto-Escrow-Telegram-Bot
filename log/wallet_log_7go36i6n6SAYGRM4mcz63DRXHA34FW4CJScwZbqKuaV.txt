@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID462955804876", "memonic": "promote jeans capable talent knife oblige horror hard cash shy body wool", "secretKey": "cafc7af88bcabea585a7e49996b9b1add871fcc9f74d24439299f493bb1f6a30", "publicKey": "7go36i6n6SAYGRM4mcz63DRXHA34FW4CJScwZbqKuaV", "currency": "SOL", "tradeType": "buy"}

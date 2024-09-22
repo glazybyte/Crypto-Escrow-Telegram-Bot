@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID589455959703", "memonic": "sunny guide museum gentle oyster increase main chapter balance rapid meat typical", "secretKey": "da2631b1bef8a88cff0b43a6d30666471a6abb4e96f04f04d183a155067a904b", "publicKey": "2amQyqkkagxjnKbzHJW5QsdfzdfvVBaMoKakdU27Dv1w", "currency": "SOL", "tradeType": "buy"}

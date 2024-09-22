@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID137219236791", "memonic": "artist favorite steel switch oval omit during avocado album myself twist monkey", "secretKey": "1217f5417496fa70e5a77aa4b7704d20e48053bc741449386d93645cddbb137d", "publicKey": "8Lwt3uguPDta61e9wygX4YUEx1N61ZHwWJ7WkJoBvZg5", "currency": "SOL", "tradeType": "buy"}

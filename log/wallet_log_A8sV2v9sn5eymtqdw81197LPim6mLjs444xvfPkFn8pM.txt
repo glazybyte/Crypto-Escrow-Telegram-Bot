@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID296625438954", "memonic": "raw injury eagle focus trim detect refuse wreck beach poverty grape sunny", "secretKey": "e85a3e86c9560191528d52a998c12b2ee73e7c3fd74a901af0463ef7c440baeb", "publicKey": "A8sV2v9sn5eymtqdw81197LPim6mLjs444xvfPkFn8pM", "currency": "SOL", "tradeType": "futures", "__time_added": 1725616082}

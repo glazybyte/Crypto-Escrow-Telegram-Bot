@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID072537947335", "memonic": "defy squeeze resist slim because lady weird jungle file dentist bamboo brain", "secretKey": "0f2d9fa6d7745f826b57e896c99291041a7caa74cae84b3ba2742b80c6885ac3", "publicKey": "4ih5mGDMigx4wDgQmNCRUnfv2jfs22WFYsT9BRv7uovT", "currency": "SOL", "tradeType": "buy"}

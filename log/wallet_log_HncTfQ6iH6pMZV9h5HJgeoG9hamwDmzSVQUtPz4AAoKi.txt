@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID899377463362", "memonic": "garment common hotel foil neck visual fork habit secret core popular pilot", "secretKey": "357a28eb625876a0a93281bbbea529849f6e48fb4a3281ba914a007a69a32c06", "publicKey": "HncTfQ6iH6pMZV9h5HJgeoG9hamwDmzSVQUtPz4AAoKi", "currency": "SOL", "tradeType": "buy"}

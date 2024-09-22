@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID997741211244", "memonic": "brick gain pelican rapid call sample taxi senior harbor chair absurd notable", "secretKey": "1398f4211157b4b09fb8f0f46105ccef568bbd048109e3bf7b7b01bf96c4f6c1", "publicKey": "DQgyz2zz8uPYDkchoc9dwE8jLXgh5ThZYeLuEDySi7gu", "currency": "SOL", "tradeType": "buy"}

@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID822797574790", "memonic": "speak casual unhappy bless mixture borrow found mushroom pulse argue luxury open", "secretKey": "16ad2c1017f674e0ec8d3b5f46fc01c04d10a5b8f36aca95c04fdb5d2ed8bce9", "publicKey": "EPs9jLXy8WaDVvxLBmpxW4HqoonP6L9PH6CSiDQxDS8d", "currency": "SOL", "tradeType": "buy"}

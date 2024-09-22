@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID102608938116", "memonic": "uphold ship glide bright ready castle milk hammer style timber warrior because", "secretKey": "fa520b468eb7dc2f3e465e15863de87598a84f49ea224888765a92b5398d1b4b", "publicKey": "6uhZiEryFDnbsJ5FKD4Zxd3keegFzox3u3Dtep9bxbhT", "currency": "SOL", "tradeType": "buy"}

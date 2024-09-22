@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TRADE_305457951576", "memonic": "high mystery tuition sheriff speak ridge moment habit brush devote unveil fragile", "secretKey": "3b3958dca498f02278d82182844a8db715d1d33835fa0c9728276cc843e434f3", "publicKey": "RmCb3cuhdhHxk3yXczrvkqM7UL7rv1AunMc3YyRLzQD", "currency": "SOL"}

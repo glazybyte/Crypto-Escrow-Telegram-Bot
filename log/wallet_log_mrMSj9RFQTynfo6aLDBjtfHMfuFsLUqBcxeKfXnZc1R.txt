@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID304799236089", "memonic": "act report bring fiscal cream escape card unhappy alien stuff climb equal", "secretKey": "626dbf9c847dbfc16e4b1fdb364299624d97757ef6b34daaef9718b23ecede82", "publicKey": "mrMSj9RFQTynfo6aLDBjtfHMfuFsLUqBcxeKfXnZc1R", "currency": "SOL", "tradeType": "buy"}

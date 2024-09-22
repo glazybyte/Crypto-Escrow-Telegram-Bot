@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID225474479103", "memonic": "essay essay scrap aisle wide father skull ancient climb market main moment", "secretKey": "b31143e9c71fa72e5acd6d88404133dd12f7289ada6c4252e5e5c379d738e81c", "publicKey": "H4k12TN4jeXXhpVKVRvnUg3cWT8azB1QHbNMChQ5yyRV", "currency": "SOL", "tradeType": "futures"}

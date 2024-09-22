@@ -9,6 +9,10 @@ from binascii import Error as BinasciiError
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from Crypto.Cipher import AES
+from datetime import datetime
+
+def get_current_datetime():
+    return datetime.now().strftime("[%d%b%y::%H:%M:%S]")
 
 def log_message(message, log_file="error_log", mainThread=False):
     log_dir = 'log'
@@ -19,10 +23,16 @@ def log_message(message, log_file="error_log", mainThread=False):
         log_file = f'{log_dir}/{log_file}.txt'
     else:
         log_file = f'{log_dir}/wallet_log_{log_file}.txt'
-
+    message = (
+        '------Log Entry Open-------\n'
+        f'{get_current_datetime()} {message}\n'
+        '------Log Entry Close-------\n'
+    )
     print(message)
     with open(log_file, 'a') as f:
         f.write(message + '\n')
+
+
 
 def validate_text(input_text, extra = []):
     allowed_pattern = r'^[a-zA-Z0-9 ,\-$@.]+$'
@@ -35,6 +45,7 @@ def validate_text(input_text, extra = []):
                     return f"Illegal character found: '{char}'"
         return True
         #return "Invalid input detected."
+
 def is_number(input_string):
     try:
         # Try converting to an integer

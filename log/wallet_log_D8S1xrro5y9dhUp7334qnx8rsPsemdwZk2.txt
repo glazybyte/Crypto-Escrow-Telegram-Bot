@@ -1,0 +1,23 @@
+Wallet generation Successful!
+{"tradeId": "TRADE458174374973", "memonic": "viyB4GHCuolDuTBBHohafaZH8gOTjmPJBUbK2EFUdhjiqJXyXQdXyey1xX0Y4rpuArqQct31LOgUCe0oRaV+UHhuB1Q+9BVnB8uaYfuo6ejhju5Abxlh0mwNPwGRdtQx", "secretKey": "154eA9mQKmlo9hVfRKOwz3ixhSv5dI8vD4pwGQ0Bzv9okkkEVot4pb5LmxKBFcBlKCsNrbnwQk/zFu6ll7hAyEWpyATM3PQIUJjsDxGUbBA=", "publicKey": "D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2", "currency": "DOGE", "tradeType": "escrow", "__time_added": 1725725938}
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+[DOGE wallet Checker]:: D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2 Transaction is detected but unconfirmed
+Sending 80000000 Satoshi with fee of 20000000
+UTXO value: 100000000
+Unsigned TX: {'tx': {'block_height': -1, 'block_index': -1, 'hash': 'dcb5ae6bc20e7827373695bf62a627e10611f7b262e62a99fbb93cc352154c14', 'addresses': ['D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2', 'DNecZ6FhDMiZ7rrXJkJFiVjLC7QXAY5m2G'], 'total': 80000000, 'fees': 20000000, 'size': 85, 'preference': 'low', 'relayed_by': '2409:40c4:2000:af34:5d64:33e7:c172:bd77', 'received': '2024-09-07T16:40:03.235515044Z', 'ver': 1, 'double_spend': False, 'vin_sz': 1, 'vout_sz': 1, 'confirmations': 0, 'inputs': [{'prev_hash': 'c6ca8ba8513d00386309e911dbc453474ad7794d837797420759d4f5a7080963', 'output_index': 0, 'output_value': 100000000, 'sequence': 4294967295, 'addresses': ['D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2'], 'script_type': 'pay-to-pubkey-hash', 'age': 5368700}], 'outputs': [{'value': 80000000, 'script': '76a914c00f41857d13be1459eab36ffc0160cedb92d42788ac', 'addresses': ['DNecZ6FhDMiZ7rrXJkJFiVjLC7QXAY5m2G'], 'script_type': 'pay-to-pubkey-hash'}]}, 'tosign': ['129b47b199b0b8df19da104314bb3e7aea416610b945a9a0bd9f4c9d94c224bb']}
+Signed signatures: ['3045022100ee9901948ec4178e431e34d2bdf7bf978a7dcde3a0b685e8454b389baae5fb05022044851d992423d7e49763bb1aada6aca477dfff8c04a4f58b67491102b34b08bd']
+Broadcasting TX
+Transaction hash: 69c1ad1581164dd9a64e5df1208d51eebb029ee7b074c9d669c0b52d1d14531b
+Transaction Push Response: {'tx': {'block_height': -1, 'block_index': -1, 'hash': '69c1ad1581164dd9a64e5df1208d51eebb029ee7b074c9d669c0b52d1d14531b', 'addresses': ['D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2', 'DNecZ6FhDMiZ7rrXJkJFiVjLC7QXAY5m2G'], 'total': 80000000, 'fees': 20000000, 'size': 192, 'preference': 'high', 'relayed_by': '2409:40c4:2000:af34:5d64:33e7:c172:bd77', 'received': '2024-09-07T16:40:07.088563137Z', 'ver': 1, 'double_spend': False, 'vin_sz': 1, 'vout_sz': 1, 'confirmations': 0, 'inputs': [{'prev_hash': 'c6ca8ba8513d00386309e911dbc453474ad7794d837797420759d4f5a7080963', 'output_index': 0, 'script': '483045022100ee9901948ec4178e431e34d2bdf7bf978a7dcde3a0b685e8454b389baae5fb05022044851d992423d7e49763bb1aada6aca477dfff8c04a4f58b67491102b34b08bd012103213ab00933233f4b3d72e55890c0805ecc35a7cc91813809af4425fc25adc017', 'output_value': 100000000, 'sequence': 4294967295, 'addresses': ['D8S1xrro5y9dhUp7334qnx8rsPsemdwZk2'], 'script_type': 'pay-to-pubkey-hash', 'age': 5368700}], 'outputs': [{'value': 80000000, 'script': '76a914c00f41857d13be1459eab36ffc0160cedb92d42788ac', 'addresses': ['DNecZ6FhDMiZ7rrXJkJFiVjLC7QXAY5m2G'], 'script_type': 'pay-to-pubkey-hash'}]}, 'tosign': ['']}

@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TRADE214280858274", "memonic": "OyrQl/xlvG//njyLGKPt7sB8Xjz2TVD5+f54NP+fV4pW3ZE19bTcVdnENk36N5UOLwLRNisFg7L8WPQCYegYLtOcZuC26oLvJ9kU1aHpSo2ul3AIYE9BW0y5WPK66ak=", "secretKey": "DwriNuLAI0ue2pD71fwfGFejr0OLRTKURWr+IgmOT9i4Qhp4xgYXzNxucO9L8emgxCJZHfsVcei/FqqRzm0gVzhtZvPgTv4s95KOxfjzX0M=", "publicKey": "E28q42iKsYxQS6LsnXuqAC3U6oQxS3dqDG8bNNK124Na", "currency": "SOL", "tradeType": "escrow", "__time_added": 1725709838}

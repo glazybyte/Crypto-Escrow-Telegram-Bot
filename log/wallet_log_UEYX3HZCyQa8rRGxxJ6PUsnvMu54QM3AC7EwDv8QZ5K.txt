@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID806323922856", "memonic": "memory fire tag rent sure same force rib allow tissue crater acoustic", "secretKey": "83188a25e2e9c8933717d36be0adb005e4c318cada45b507df03cd8db26da3a2", "publicKey": "UEYX3HZCyQa8rRGxxJ6PUsnvMu54QM3AC7EwDv8QZ5K", "currency": "SOL", "tradeType": "buy"}

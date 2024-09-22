@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID549092304582", "memonic": "price ribbon butter renew fresh rival theme arm dream mammal trophy snap", "secretKey": "e939d9ccff88050ec9e2d14a4aa91f0d867b584cb616d2251f7504035a9b71e5", "publicKey": "HL6MYQw1xyytQdku7cazB5hwfzHXVtM5BG14U3WNCi4K", "currency": "SOL", "tradeType": "buy"}

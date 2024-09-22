@@ -1,0 +1,3 @@
+Wallet generation Successful!
+{"tradeId": "TRADE_629855044577", "memonic": "dice dirt grab response rookie resource few couple bunker south trumpet patrol", "secretKey": "e6555cee562304affe745acc4293cee9d81d9389aee51d0881d7250fabd33b19", "publicKey": "9vU132Vy3DM9qP7DzxtxXAnbigzVrFVJyq3KLq17PtZ8", "currency": "SOL"}
+Transaction response: 2MnDMg2VoEprs3SdcbvxSoshnm8SuezYqkGben57w8iTh89hSoJh3W9sVRNZUsXpJ4KQ5mzn3x5sFZ1HhxtZFGYW

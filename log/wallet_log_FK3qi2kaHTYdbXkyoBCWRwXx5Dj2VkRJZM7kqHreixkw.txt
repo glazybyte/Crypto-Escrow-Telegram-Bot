@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID122146066794", "memonic": "engage alarm lady describe matter easy rail flip grocery witness bar salad", "secretKey": "463a2f4cf31434c58056c20fe803e71a516420d12441ae74143c4c57734f23a4", "publicKey": "FK3qi2kaHTYdbXkyoBCWRwXx5Dj2VkRJZM7kqHreixkw", "currency": "SOL", "tradeType": "buy"}

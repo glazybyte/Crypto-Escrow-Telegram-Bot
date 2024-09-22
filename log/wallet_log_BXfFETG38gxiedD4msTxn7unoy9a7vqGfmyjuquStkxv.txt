@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID299755801498", "memonic": "crop abandon cricket north piano spend onion course promote inhale rose cancel", "secretKey": "00946aabc3382dabaca572bf98ee2d05121dfdfa9f83afe3370df714d6f9d527", "publicKey": "BXfFETG38gxiedD4msTxn7unoy9a7vqGfmyjuquStkxv", "currency": "SOL", "tradeType": "buy"}

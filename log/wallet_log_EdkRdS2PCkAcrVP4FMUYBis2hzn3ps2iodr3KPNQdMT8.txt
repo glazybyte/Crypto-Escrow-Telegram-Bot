@@ -1,0 +1,3 @@
+Wallet generation Successful!
+{"tradeId": "TRADE_122775351986", "memonic": "friend warrior noodle try outside journey silk banner text blur shift inch", "secretKey": "65ac4cbdbb3b4bc5ecded838be7744f6e63ffd2cb75fe551bcef101aaa171e61", "publicKey": "EdkRdS2PCkAcrVP4FMUYBis2hzn3ps2iodr3KPNQdMT8", "currency": "SOL"}
+Transaction response: 4xByVH1NBt5RQvLmamncfENDNiN7jPB7M4ammnvCrS4gC12a21tfyMT6ynD3fe3gCxvw5VDSJYcL1VBezeG16T7Z

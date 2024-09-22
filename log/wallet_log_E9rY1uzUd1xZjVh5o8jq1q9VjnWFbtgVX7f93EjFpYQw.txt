@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID670429148069", "memonic": "hVdSebrOe//FnPuZAIJ54boVQBjos/U2zxhJuBYdlM0XJ9/TFSH384ExetmRRtepyCLVzYoWOV6+2Y9uOUranhVLmt49DAVB48fcxwqOVnqy+o02JESCzxXK2G3m5gk=", "secretKey": "gBkaHFcrpLx9+fsvsmYvIwm2svTo+ngYjX7NE2ChxWgyd9w3gdvA0paDsFMA1N6Mc73UeuKi5YRMR6MS4Wc2wxPj1fDXis6vuAM4kR6N8SE=", "publicKey": "E9rY1uzUd1xZjVh5o8jq1q9VjnWFbtgVX7f93EjFpYQw", "currency": "SOL", "tradeType": "futures", "__time_added": 1725649079}

@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID722864708974", "memonic": "expand master sunset laugh source dismiss entry federal basket parade exercise blanket", "secretKey": "6cc7d8a200caf53470429c3e50efcd4e3d18d7880bdf6de68fd011ff0fd36f76", "publicKey": "BsmLRZDL2WimptfYE4nzm9Dbm59ZbYyjUg3NoVXpm1aH", "currency": "SOL", "tradeType": "futures"}

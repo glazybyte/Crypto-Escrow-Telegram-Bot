@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID427537998861", "memonic": "nuclear tree decade soon turtle abuse frequent beyond attack acquire target energy", "secretKey": "5fa0739e35767b252165d7f391b9750ca2700182469e5bd276d8e5c40a953da8", "publicKey": "A3RTuPzXPMgTsKbi4A8U7ptLfmSW5rVvsdmmtX4Phzh1", "currency": "SOL", "tradeType": "buy"}

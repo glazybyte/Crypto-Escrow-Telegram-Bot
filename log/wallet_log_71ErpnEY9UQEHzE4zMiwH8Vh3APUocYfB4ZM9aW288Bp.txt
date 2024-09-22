@@ -1,0 +1,2 @@
+Wallet generation Successful!
+{"tradeId": "TXID467222431575", "memonic": "loud miracle element bone truck pelican resemble toward giggle match ice bomb", "secretKey": "74256309f3484fe3bbca39b1bfbde0e84c4e761d05a7246e7c83355bde5078f9", "publicKey": "71ErpnEY9UQEHzE4zMiwH8Vh3APUocYfB4ZM9aW288Bp", "currency": "SOL", "tradeType": "buy"}
