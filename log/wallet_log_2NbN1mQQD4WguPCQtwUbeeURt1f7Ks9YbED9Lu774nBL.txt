@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID290844810173", "memonic": "maple across mandate reunion physical vendor payment ghost pyramid organ omit behave", "secretKey": "bcb83c57f46ce687228b838fa3c3ba19e422fa14d9068eea14ac31385d1778d4", "publicKey": "2NbN1mQQD4WguPCQtwUbeeURt1f7Ks9YbED9Lu774nBL", "currency": "SOL", "tradeType": "buy"}

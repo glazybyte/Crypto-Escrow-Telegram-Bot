@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID926388333515", "memonic": "valley glimpse lunar biology stuff erase nominee easy cash garment viable question", "secretKey": "5e9c70bf63692a69d00334b6e110ec76ece23a8ee2d26b3490ffdfb2240f217c", "publicKey": "FzDXk45UiGY6RgSGBMLK1WW61akKgdDMDUdnzws3mxoy", "currency": "SOL", "tradeType": "buy"}

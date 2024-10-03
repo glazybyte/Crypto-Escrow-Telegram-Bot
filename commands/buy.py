@@ -67,7 +67,7 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
             [
                 context.bot.edit_message_text, 
                 {
-                    'text':f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: 10min\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Open\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
+                    'text':f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: 10min\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Open\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
                     'reply_markup':reply_markup,
                     'chat_id':message.chat_id,
                     'message_id':message.message_id,
@@ -77,7 +77,6 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
         ]
     )
     
-
 def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> None:
     query = update.callback_query
     tx_id = bot_state.get_waiting_for_input_context(query.from_user.id)['tx_id']
@@ -106,7 +105,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
         if time_left <= 0:
             query.edit_message_text(
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Closed\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Closed\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
             )
             #close Transaction Function
             return
@@ -128,13 +127,13 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                     [InlineKeyboardButton("Refresh Time", callback_data='option_16')]
                 ])
             query.edit_message_text(
-                text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: {msg_piece}n\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: {msg_piece}n\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
                 reply_markup=reply_markup,
                 parse_mode=ParseMode.MARKDOWN
             )
     elif query.data == 'option_17':
         bot_state.set_waiting_for_input(str(query.from_user.id), [query.message, {'tx_id': tx_id}], 'button')
-        context.bot.send_message(chat_id=tx_details['buyer'], text="Alrighty Right! We will check your payment status every minute now until we receive it, once confirmed in Blockchain, we will proceed.")
+        context.bot.send_message(chat_id=tx_details['buyer'], text="━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right! We will check your payment status every minute now until we receive it, once confirmed in Blockchain, we will proceed.")
         bot_state.add_address_to_check_queue(tx_details["ourAddress"], tx_id,  tx_details["currency"])
         reply_markup = InlineKeyboardMarkup([
             [InlineKeyboardButton("Refresh Time", callback_data='option_16')],
@@ -143,7 +142,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
         bot_state.set_tx_var(tx_id, tx_details)
         query.edit_message_text(
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Awaiting Blockchain Confirmation\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Awaiting Blockchain Confirmation\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
             reply_markup=reply_markup
         )
     query.answer()
@@ -153,7 +152,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
     if tx_details['status'] in ["open", "open[awaiting_payment]"]:
         close_trade(bot_state, context, 'close[payment_timeout]')
         bot.edit_message_text(
-            text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: Time Out!\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Invoice Expired",
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: Time Out!\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Invoice Expired",
             chat_id=tx_details['buyer'],
             message_id=tx_details['message_id'],
             parse_mode=ParseMode.MARKDOWN,

@@ -5,8 +5,9 @@ import concurrent.futures
 
 def execute(update: Update, context: CallbackContext, bot_state) -> None:
     tradeId = bot_state.getUserTrade(str(update.message.from_user.id))
-    print(tradeId)
+    
     if(tradeId != ''):
+        print(f'Canceling Escrow: {tradeId}')
         close_trade(bot_state, tradeId, "close[user_initiated]")
         update.message.reply_text(text=f"Aw well that's sad...\nHope to see you soon!!", reply_to_message_id=update.message.message_id)
     else:
@@ -18,11 +19,11 @@ def close_trade(bot_state, action_id: str, message: str, lockBypass=False):
         tradeDetails["status"] = message
         with concurrent.futures.ThreadPoolExecutor() as executor:
             futures = [
-                executor.submit(bot_state.set_var, action_id, tradeDetails, lockBypass), 
-                executor.submit(bot_state.setUserTrade, tradeDetails["buyer"], "", lockBypass), 
+                executor.submit(bot_state.set_var, action_id, tradeDetails, lockBypass),
+                executor.submit(bot_state.setUserTrade, tradeDetails["buyer"], "", lockBypass),
                 executor.submit(bot_state.setUserTrade, tradeDetails["seller"], "", lockBypass),
-                executor.submit(bot_state.unlockUser, tradeDetails["buyer"], lockBypass), 
-                executor.submit(bot_state.unlockUser, tradeDetails["seller"], lockBypass), 
+                executor.submit(bot_state.unlockUser, tradeDetails["buyer"], lockBypass),
+                executor.submit(bot_state.unlockUser, tradeDetails["seller"], lockBypass),
                 executor.submit(bot_state.unlockUser, tradeDetails["senderId"], lockBypass),
                 executor.submit(bot_state.setUserTrade, tradeDetails["senderId"], "", lockBypass),
             ]

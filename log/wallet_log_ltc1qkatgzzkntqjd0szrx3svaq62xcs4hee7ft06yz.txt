@@ -1,9 +1,0 @@
-Sending 92000 Satoshi with fee of 2000
-UTXO value: 96000
-Unsigned TX: {'errors': [{'error': 'Unable to find a transaction to spend for address ltc1qkatgzzkntqjd0szrx3svaq62xcs4hee7ft06yz.'}, {'error': 'Not enough funds in 0 inputs to pay for 2 outputs, missing -92000.'}, {'error': 'Not enough funds in 0 inputs to pay for 2 outputs, missing -94000.'}, {'error': 'Not enough funds after fees in 0 inputs to pay for 2 outputs, missing -95600.'}, {'error': 'Error validating generated transaction: Transaction missing input or output.'}], 'tx': {'block_height': -1, 'block_index': -1, 'hash': 'ff83131ea528f3bf1e009896f4c30e0075ee853dc47ef2d1fb6901252422e6b0', 'addresses': ['ltc1q3nhkjsxz6dlfvjzkcwg2e47mtkf7aqscm5su4n', 'ltc1qkatgzzkntqjd0szrx3svaq62xcs4hee7ft06yz'], 'total': 94000, 'fees': 2000, 'size': 72, 'vsize': 72, 'preference': 'medium', 'relayed_by': '2409:40c4:201b:d043:9497:3726:326a:ecc1', 'received': '2024-08-07T06:51:22.421112103Z', 'ver': 1, 'double_spend': False, 'vin_sz': 0, 'vout_sz': 2, 'confirmations': 0, 'inputs': [], 'outputs': [{'value': 92000, 'script': '00148cef6940c2d37e964856c390acd7db5d93ee8218', 'addresses': ['ltc1q3nhkjsxz6dlfvjzkcwg2e47mtkf7aqscm5su4n'], 'script_type': 'pay-to-witness-pubkey-hash'}, {'value': 2000, 'script': '0014b756810ad35824d7c0433460ce834a36215be73e', 'addresses': ['ltc1qkatgzzkntqjd0szrx3svaq62xcs4hee7ft06yz'], 'script_type': 'pay-to-witness-pubkey-hash'}]}}
-An error occurred: 'tosign'
-Traceback (most recent call last):
-  File "test4.py", line 99, in send_ltc_transaction
-    tx_signatures = make_tx_signatures(txs_to_sign=unsigned_tx['tosign'], privkey_list=privkey_list, pubkey_list=pubkey_list)
-KeyError: 'tosign'
-

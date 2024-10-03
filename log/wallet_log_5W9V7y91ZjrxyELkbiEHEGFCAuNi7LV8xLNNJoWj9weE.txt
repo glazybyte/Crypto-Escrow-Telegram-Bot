@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID222656596681", "memonic": "copy glance forward spirit stick library sausage coffee ring depart raccoon train", "secretKey": "3106d643949672cac08857a002f7d125e752f01cf2d8dfadb576e33a08477055", "publicKey": "5W9V7y91ZjrxyELkbiEHEGFCAuNi7LV8xLNNJoWj9weE", "currency": "SOL", "tradeType": "futures", "__time_added": 1725617957}

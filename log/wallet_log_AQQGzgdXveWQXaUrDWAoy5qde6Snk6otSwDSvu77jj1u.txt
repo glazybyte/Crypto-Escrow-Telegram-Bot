@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID729165547498", "memonic": "inner jaguar blood absorb disease ordinary model spell word unveil paddle receive", "secretKey": "1ea50b7a55f2fc194658faf8624ece3f66a45102f8cd04c54fa31100999e8879", "publicKey": "AQQGzgdXveWQXaUrDWAoy5qde6Snk6otSwDSvu77jj1u", "currency": "SOL", "tradeType": "buy"}

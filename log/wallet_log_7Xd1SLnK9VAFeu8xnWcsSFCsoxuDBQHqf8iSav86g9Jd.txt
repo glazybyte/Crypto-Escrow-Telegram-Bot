@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID297620290033", "memonic": "toe jealous security wet oil fiction area elephant nuclear furnace bacon tourist", "secretKey": "b97f5ba97ebf5917565f334ba8663b485a81a9dad8c7aaf02473eda5850fa2b7", "publicKey": "7Xd1SLnK9VAFeu8xnWcsSFCsoxuDBQHqf8iSav86g9Jd", "currency": "SOL", "tradeType": "futures", "__last_access": 1725531455}

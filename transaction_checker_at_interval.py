@@ -167,7 +167,7 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
         try:
             message = bot.edit_message_text(
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tradeDetails['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']}\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Paid\n",
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tradeDetails['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']}\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Paid\n",
                 chat_id=tradeDetails["buyer"],
                 message_id=tradeDetails["message_id"]
             )
@@ -178,7 +178,7 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
             bot.send_message(
                 parse_mode=ParseMode.MARKDOWN,
                 chat_id=tradeDetails["buyer"], 
-                text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tradeDetails['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']}\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Paid\n", 
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tradeDetails['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']}\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Paid\n", 
             )
         if item_details['type'] == 'automatic':
             if item_details['stock'] > 0:
@@ -192,7 +192,7 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
                 message = bot.send_message(
                     parse_mode=ParseMode.MARKDOWN,
                     chat_id=tradeDetails["buyer"],
-                    text=f"*Item Delivery*\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nWe recommend to start recording a video while clicking 'Take Delivery' and verifying your keys for proof", 
+                    text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n*Item Delivery*\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nWe recommend to start recording a video while clicking 'Take Delivery' and verifying your keys for proof", 
                     reply_markup=reply_markup
                 )
                 bot_state.set_waiting_for_input(tradeDetails["buyer"], [message, {'tx_id': tradeId, 'context': 'deliveryClaim'}], 'button')
@@ -203,7 +203,7 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
             bot.send_message(
                 chat_id=tradeDetails["buyer"],
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nSeller is notified to Deliver your Product.\n(if seller fails to deliver within 1 day or you have issues contact us)", 
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\nSeller is notified to Deliver your Product.\n(if seller fails to deliver within 1 day or you have issues contact us)", 
             )
             keyboard = [
                 [InlineKeyboardButton("I have Sent", callback_data='option_20')],
@@ -213,7 +213,7 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
             message = bot.send_message(
                 chat_id=item_details["seller"],
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\n𝗕𝘂𝘆𝗲𝗿: {tradeDetails['buyer']}\n\nThe Buyer has paid the amount, do the delivery!", 
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tradeId}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tradeDetails['tradeAmount']} *{tradeDetails['currency']}*\n𝗕𝘂𝘆𝗲𝗿: {tradeDetails['buyer']}\n\nThe Buyer has paid the amount, do the delivery!", 
                 reply_markup=reply_markup
             )
             bot_state.set_waiting_for_input(tradeDetails["seller"], [message, {'tx_id': tradeId, 'context': 'product_verification'}], 'button')
@@ -234,32 +234,32 @@ def timeout_up(context, bot, bot_state: GlobalState):
             bot.send_message(
                 chat_id=tx_details["buyer"], 
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to provide a response, releasing payment to Seller",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to provide a response, releasing payment to Seller",   
             )
             sendtrans(bot_state, context)
             bot.send_message(
                 chat_id=item_details["seller"], 
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Your Payment has been released",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Your Payment has been released",   
             )
             close_trade(bot_state, context, 'close[success]')
         elif item_details['type'] == 'manual' and tx_details['sellerStatus'] != 'delivered': #manual type
             bot.send_message(
                 chat_id=item_details["seller"], 
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to deliver goods within 1 day, transaction has been marked Canceled!",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to deliver goods within 1 day, transaction has been marked Canceled!",   
             )
             bot.send_message(
                 chat_id=tx_details["buyer"],
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Seller failed to provide you a solution it seems, you can collect your funds by contacting us.",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Seller failed to provide you a solution it seems, you can collect your funds by contacting us.",   
             )
             close_trade(bot_state, context, 'close[manual_delivery_timeout]')
         elif item_details['type'] == 'manual' and tx_details['sellerStatus'] == 'delivered':
             bot.send_message(
                 chat_id=tx_details["buyer"],
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to provide a response, releasing payment to Seller",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n You Failed to provide a response, releasing payment to Seller",   
             )
             sendtrans(bot_state, context)
             close_trade(bot_state, context, 'close[success]')
@@ -284,7 +284,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
             message_id=button_context["message_id"],
             parse_mode=ParseMode.MARKDOWN,
             chat_id=tx_details["buyer"],
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\nDelivery Key(s):\n {tx_details['delivery']}\n(you have 10 minutes to confirm if working or not)", 
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\nDelivery Key(s):\n {tx_details['delivery']}\n(you have 10 minutes to confirm if working or not)", 
             reply_markup=reply_markup
         )
         bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'product_verification'}], 'button')
@@ -297,13 +297,13 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         context.bot.send_message(
             chat_id=tx_details["buyer"], 
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\nAlrighty Right! Releasing payment to Seller, don't forget to share about our services.", 
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\nAlrighty Right! Releasing payment to Seller, don't forget to share about our services.", 
         )
         sendtrans(bot_state, tx_id)
         context.bot.send_message(
             chat_id=item_details["seller"],
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: @{tx_details['buyer_username']}\n\n Your Payment has been released",   
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: @{tx_details['buyer_username']}\n\n Your Payment has been released",   
         )
         close_trade(bot_state, tx_id, 'close[success]')
         
@@ -312,7 +312,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         context.bot.send_message(
             chat_id=item_details["seller"], 
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: @{tx_details['buyer_username']}\n Buyer seems to be having Issues with the order, fix that by contacting them within 24 hours",   
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: @{tx_details['buyer_username']}\n Buyer seems to be having Issues with the order, fix that by contacting them within 24 hours",   
         )
         keyboard = [
             [InlineKeyboardButton("Resolved", callback_data='option_21')],
@@ -321,7 +321,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         message = context.bot.send_message(
             chat_id=tx_details["buyer"],
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n\n Seller is notified to assist you, they have 1 day to resolve\nClick button below if issue is resolved", 
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n\n Seller is notified to assist you, they have 1 day to resolve\nClick button below if issue is resolved", 
             reply_markup=reply_markup
         )
         bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'issue_resolved'}], 'button')
@@ -330,13 +330,13 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         context.bot.send_message(
             chat_id=tx_details["buyer"], 
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n Alrighty Right! Releasing payment to Seller, Dont forgot to share about our services.", 
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n Alrighty Right! Releasing payment to Seller, Dont forgot to share about our services.", 
         )
         sendtrans(bot_state, tx_id)
         context.bot.send_message(
             chat_id=item_details["seller"],
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: {tx_details['buyer_username']}\n\n Your Payment has been released",   
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: {tx_details['buyer_username']}\n\n Your Payment has been released",   
         )
         close_trade(bot_state, tx_id, 'close[success]')
     elif query.data == 'option_20'and str(query.from_user.id) == item_details['seller']:
@@ -345,7 +345,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         context.bot.send_message(
             chat_id=item_details["seller"],
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: {tx_details['buyer_username']}\n\n Asking Buyer for Confirmation",   
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n𝗕𝘂𝘆𝗲𝗿: {tx_details['buyer_username']}\n\n Asking Buyer for Confirmation",   
         )
         keyboard = [
             [InlineKeyboardButton("Confirm Working", callback_data='option_18')],
@@ -355,7 +355,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         message = context.bot.send_message(
             chat_id=tx_details["buyer"], 
             parse_mode=ParseMode.MARKDOWN,
-            text=f"𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n Seller says to have delivered the product(s), click the button below to confirm (you have 10 minutes to confirm if working or not)", 
+            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n Seller says to have delivered the product(s), click the button below to confirm (you have 10 minutes to confirm if working or not)", 
             reply_markup=reply_markup
         )
         bot_state.set_waiting_for_input(tx_details["buyer"], [message, {'tx_id': tx_id, 'context': 'product_verification'}], 'button')

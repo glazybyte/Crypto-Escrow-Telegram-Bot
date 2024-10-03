@@ -86,12 +86,3 @@ async def main():
 
 if __name__ == '__main__':
     asyncio.run(main())
-
-
-
-
-
-#Very well aware of the three memory leaks but decided not to fix for now as very early in development stage
-#1 The tradedetails
-#2 Waiting for user to respond indefinitely
-#3 The wallets are in storage even after use

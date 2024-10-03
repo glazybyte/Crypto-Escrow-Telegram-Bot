@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID961816399932", "memonic": "surge apology syrup focus license novel rather more type impact wrestle fashion", "secretKey": "1c1b782d4de6fcbd055304f750cc3f7931d971e6218871fe65803ec7172a02d7", "publicKey": "2cyGwKWZV3cngJBC3h8oGWQwT825Ak5du6eSVLqs65my", "currency": "SOL", "tradeType": "buy"}

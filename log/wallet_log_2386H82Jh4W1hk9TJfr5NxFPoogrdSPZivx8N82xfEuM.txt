@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID660730308074", "memonic": "kitten unable season draft suffer guitar flavor current urge achieve come volume", "secretKey": "309e6a4fadf904420a5ae5ea2ed0f27a56034542f9f735263717dd2a338c305d", "publicKey": "2386H82Jh4W1hk9TJfr5NxFPoogrdSPZivx8N82xfEuM", "currency": "SOL", "tradeType": "futures"}

@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID412210255661", "memonic": "remember climb position chair mention essay slot mention gate label tackle wrist", "secretKey": "3e63666720a46d21fdfece79e5b991db5604c5b438f2fbcb2c01a9a44ac3a6fb", "publicKey": "7UPNJf8RfhPknuhwnG2pGCjhrodYerzW9JMyQmdQEQoY", "currency": "SOL", "tradeType": "buy"}

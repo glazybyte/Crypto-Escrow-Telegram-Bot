@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID594325971277", "memonic": "ethics auction boil siren fortune sure comic ribbon shrug uniform spoil response", "secretKey": "8c9e0738b608219a025a5bb47806ddd9feba24396ebf39c42803e2ef390900e4", "publicKey": "HXkbTVpEZB64b9NwpGiFWCPV3gUKwrnuAQG7VYj85j7k", "currency": "SOL", "tradeType": "buy"}

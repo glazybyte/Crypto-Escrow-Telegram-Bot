@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID911400247609", "memonic": "cruise plunge priority belt craft trouble income trip rack dolphin idea minimum", "secretKey": "7fdc04277817d99422f29179c97ede84958ab856c0172e33cbd9e95025e5e85b", "publicKey": "E41LfcmKWEjvo4BbunyZLGTBNokWb3sWMFiMJPR5LcBQ", "currency": "SOL", "tradeType": "buy"}

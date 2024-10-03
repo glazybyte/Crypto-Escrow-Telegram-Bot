@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID776053036243", "memonic": "either spatial short museum leader crack party try jewel taxi tag cargo", "secretKey": "d424813557da710510d396864250adde4d17139064dc6be537f84524ab49cfef", "publicKey": "FJ4m61Eu4s8S8dMW1xRrjSXKu1JW9o59h27cApZwzxue", "currency": "SOL", "tradeType": "buy"}

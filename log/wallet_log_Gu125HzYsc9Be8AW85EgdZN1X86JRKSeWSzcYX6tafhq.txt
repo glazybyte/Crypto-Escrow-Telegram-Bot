@@ -1,7 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID839826476317", "memonic": "8i987KHsVrUe4iFUPZdJedkEkxlzVJaMygXMZsQ7vPjMrJY6oTdLVIeRd6V/M7P4UQLLNFg5DsopRdD4DA/Jt/kDul56f+h4HjMf6KSb0Y9DgVy1WEr+GZRVFhM=", "secretKey": "KcPPM1f/D1OVN/7huQS9tk4aSMIjzDhvCHQZ1fPDi647yO8VsqzPqZOTyOt3pnCOEbuGmcuE+98bmg76w6IhfDZa7GDR40vWeM50z3nqIuM=", "publicKey": "Gu125HzYsc9Be8AW85EgdZN1X86JRKSeWSzcYX6tafhq", "currency": "SOL", "tradeType": "futures", "__time_added": 1725726365}
-Initiating transaction for Trade ID: TXID839826476317
-Sender: Gu125HzYsc9Be8AW85EgdZN1X86JRKSeWSzcYX6tafhq, Recipient: 9eeneoxQmxbYFTrffFS5rDz1VsdCpQuzd4D67UNE5D8W, Amount: 2 USDT
-TX response: {"jsonrpc":"2.0","result":"43HNBWHjgrAwvo4fjakaLmEVtc2V8TQqTQbXxyCcu8wDSFWZtqEffLXKyuHMDyBuaTQq6Jz6LBuFCyVNSYy717N","id":0}
-Transaction sent: https://solscan.io/tx/43HNBWHjgrAwvo4fjakaLmEVtc2V8TQqTQbXxyCcu8wDSFWZtqEffLXKyuHMDyBuaTQq6Jz6LBuFCyVNSYy717N
-Transaction for Trade ID TXID839826476317 completed

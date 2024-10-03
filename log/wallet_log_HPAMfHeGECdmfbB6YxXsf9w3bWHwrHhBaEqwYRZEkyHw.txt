@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID779726888280", "memonic": "drastic patch dwarf orbit repair indicate giant dream jar advice empty multiply", "secretKey": "6c7825f687f0b271b1ff2527f86b3bb0590cf260242b95013bbb31beab2a3de3", "publicKey": "HPAMfHeGECdmfbB6YxXsf9w3bWHwrHhBaEqwYRZEkyHw", "currency": "SOL", "tradeType": "buy"}

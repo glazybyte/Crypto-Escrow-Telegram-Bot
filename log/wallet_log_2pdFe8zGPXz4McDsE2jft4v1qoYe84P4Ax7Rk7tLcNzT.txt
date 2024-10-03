@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID949350997133", "memonic": "crack audit render enrich paper supply bench enact else jeans bracket wire", "secretKey": "58888596e4f2271b9673c887fd5ccfb95cbed770095fac135fb9ed33e4d4e42e", "publicKey": "2pdFe8zGPXz4McDsE2jft4v1qoYe84P4Ax7Rk7tLcNzT", "currency": "SOL", "tradeType": "futures", "__last_access": 1725530738}

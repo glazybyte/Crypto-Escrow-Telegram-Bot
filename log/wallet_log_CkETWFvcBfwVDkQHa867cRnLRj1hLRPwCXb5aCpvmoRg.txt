@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID849345592116", "memonic": "length major feature sail use spend edit merge cheese receive note across", "secretKey": "76d5dfbd05335550dce9f92b57856063da9dff099767d908434436113b434f25", "publicKey": "CkETWFvcBfwVDkQHa867cRnLRj1hLRPwCXb5aCpvmoRg", "currency": "SOL", "tradeType": "futures", "__last_access": 1725531674}

@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID777679684605", "memonic": "piano young find tool cigar bright gaze act horse fever build reveal", "secretKey": "ccd1d0b671b2fa18e451b60a2a2fd825d691fdc7757e38ad4a86be6423fc3b8b", "publicKey": "5gyAJPDYqR6AKgPymnA1QV6uR78ydCGsjZautpksf6QP", "currency": "SOL", "tradeType": "buy"}

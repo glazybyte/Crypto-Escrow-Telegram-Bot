@@ -55,13 +55,13 @@ class GlobalState:
         self.unlockvar(var, lockBypass)
         return self.state['escrow'].get(var)
 
-    def lockUser(self, user: str):
+    def lockUser(self, user: str, lockBypass=False):
         self.state["lockmanager"][user] = True
     
-    def unlockUser(self, user: str):
+    def unlockUser(self, user: str, lockBypass=False):
         self.state["lockmanager"][user] = False
     
-    def isUserLocked(self, user: str):
+    def isUserLocked(self, user: str, lockBypass=False):
         return self.state["lockmanager"].get(user, False)
     
     def lockvar(self, name):
@@ -128,11 +128,12 @@ class GlobalState:
                 else:
                     self.state["user_data"][userid] = template
         user = self.state["user_data"].get(userid, template)
-        self.state['user_data'][userid]['__last_access'] = int(time.time())
+        user['__last_access'] = int(time.time())
         if 'shopItems' not in user:
             user['shopItems'] = []
             user['shopName'] = user['shopDesc'] = 'none'
             user['shopStatus'] = 'enabled'
+        self.setUser(userid, user, lockBypass=True)
         self.unlockvar(userid, lockBypass)
         return self.state["user_data"].get(userid, template)
     
@@ -150,7 +151,7 @@ class GlobalState:
         self.setUser(userid, user, lockBypass)
 
     def getUserTrade(self, userid: str, lockBypass=False):
-        user = self.getUser(userid)
+        user = self.getUser(userid, lockBypass)
         return user['currentTrade'];
 
     def set_waiting_for_input(self, chat_id: str, context, input_type = 'text', cmd='none', lockBypass=False):

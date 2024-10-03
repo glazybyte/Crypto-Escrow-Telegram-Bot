@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID479355001067", "memonic": "cousin story village cage arrest town pill pledge clap dizzy expect accuse", "secretKey": "d7080f27a105ea420a4bef8c274bba3656ab5c530f453e5e6da017ca5a9e3625", "publicKey": "6uyuv2uXB1zNetfqQ8e7f2Pjk3K9jSVD2kRTtm9i7QCt", "currency": "SOL", "tradeType": "buy"}

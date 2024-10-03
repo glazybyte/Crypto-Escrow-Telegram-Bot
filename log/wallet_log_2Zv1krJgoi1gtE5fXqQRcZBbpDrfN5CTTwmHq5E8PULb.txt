@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID291202393317", "memonic": "girl dish hedgehog feel possible gym copy ancient unique bind paddle differ", "secretKey": "e7e721a165879893f9eb56ae0e2f98eff1a6a950bd7a7834d6a7fd160ea7e589", "publicKey": "2Zv1krJgoi1gtE5fXqQRcZBbpDrfN5CTTwmHq5E8PULb", "currency": "SOL", "tradeType": "futures", "__time_added": 1725615973}

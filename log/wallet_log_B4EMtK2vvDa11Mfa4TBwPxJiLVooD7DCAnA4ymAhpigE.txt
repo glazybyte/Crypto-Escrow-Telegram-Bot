@@ -1,5 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TRADE667763093477", "memonic": "A4o1nwbw3c/J5vc3pfzlkNWskpqUmgkYa7Duzf5NUFz87DMP/G8dQRxdqh0MisljDjn3RQa4i2Cf04m8vFTcHXzMELfoOhA+ZdrAwVkrxrq//ei+biTEIT+RDQ==", "secretKey": "6YuvfXu/6Ftfo1atYwjENH3MaaO7hPEqCZoSHUE5gBHA/2xGgcmnZv/ynyKNe7XpeLw+ZxJYuALLlJJ5Y9Ci90Fsuvc6i9y3YgZbMtu0NxY=", "publicKey": "B4EMtK2vvDa11Mfa4TBwPxJiLVooD7DCAnA4ymAhpigE", "currency": "SOL", "tradeType": "escrow", "__time_added": 1725725484}
-Initiating transaction for Trade ID: TRADE667763093477
-Sender: B4EMtK2vvDa11Mfa4TBwPxJiLVooD7DCAnA4ymAhpigE, Recipient: 9eeneoxQmxbYFTrffFS5rDz1VsdCpQuzd4D67UNE5D8W, Amount: 0.002 USDT
-Transaction response: 59kF6LKoXzJwm5LuPu3hB25oiMu2XmVywooHsR6AeuRozNSZZD8WeduY5TZhqpmDSfg654CJp7ttR2Cuhy1CHQWC

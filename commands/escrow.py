@@ -136,7 +136,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                 [bot_state.set_waiting_for_input, str(query.from_user.id), "tradeAmount", 'text', 'commands.escrow'],
             ]
         )
-        query.edit_message_text(text=f"Ok, Selected Crypto is {tradeDetails['currency']}. \n\nEnter the amount of {tradeDetails['currency']} for trade:")
+        query.edit_message_text(text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right, Selected Crypto is {tradeDetails['currency']}. \n\nEnter the amount of {tradeDetails['currency']} for trade:")
         return
     elif(tradeDetails["step6"] != "done"):
         if(tradeDetails["seller"] == str(query.from_user.id)):
@@ -162,7 +162,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                 if query.data == 'option_6':
                     tradeDetails["buyerApproval"] = True
                     bot_state.set_var(tradeId, tradeDetails)
-                    context.bot.send_message(chat_id=tradeDetails["buyer"], text=f"Alrighty Right! You have accepted the Trade, we are now waiting for other party's approval")
+                    context.bot.send_message(chat_id=tradeDetails["buyer"], text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right! You have accepted the Trade, we are now waiting for other party's approval")
                     query.answer()
                 elif query.data == 'option_7':
                     tradeDetails["buyerApproval"] = False
@@ -189,11 +189,11 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                 [
                     [context.bot.send_message, {
                         'chat_id':tradeDetails["buyer"],
-                        'text':f"Alrighty Right! Both parties have accepted the trade \nWaiting for seller to enter their {tradeDetails['currency']} wallet address"
+                        'text':f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right! Both parties have accepted the trade \nWaiting for seller to enter their {tradeDetails['currency']} wallet address"
                     }],
                     [context.bot.send_message, {
                         'chat_id':tradeDetails["seller"],
-                        'text':f"Alrighty Right! Both parties have accepted the trade\nSince you're the seller enter your {tradeDetails['currency']} address to receive the funds on after trade"
+                        'text':f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right! Both parties have accepted the trade\nSince you're the seller enter your {tradeDetails['currency']} address to receive the funds on after trade"
                     }],
                     [bot_state.set_waiting_for_input, tradeDetails["seller"], "seller_address", 'text', 'commands.escrow'],
                     [bot_state.set_var, tradeId, tradeDetails]
@@ -303,7 +303,7 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
             chat_id=message.chat_id,
             message_id=message.message_id,
             #reply_to_message_id=update.message.message_id,
-            text="Explain the trade in detail (This is crucial if something goes wrong and manual intervention in needed)"
+            text="Explain the trade in detail\n(This is crucial if something goes wrong and manual intervention is needed)"
         )
         bot_state.set_waiting_for_input(str(update.message.from_user.id), "tradeDetails")
         # Update trade details

@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID595297281615", "memonic": "stove type royal unknown execute mention glory tunnel turtle lock machine stereo", "secretKey": "aa4819946ae0a5aedf7efd11c0323feaf2848a3d07477637d3bba14d859cd21e", "publicKey": "3HErEtTSppeTW6Kp5S77ZbN423wWNJogpebESDQABFAf", "currency": "SOL", "tradeType": "buy"}

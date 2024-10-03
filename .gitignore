@@ -3,3 +3,4 @@ test/
 logs/
 LOCAL_TODO
 __pycache__/
+__test

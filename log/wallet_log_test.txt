@@ -1,4 +1,0 @@
-------Log Entry Open-------
-[18Sep24::10:43:28] This Is test
-------Log Entry Close-------
-

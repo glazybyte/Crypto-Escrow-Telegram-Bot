@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID650392687674", "memonic": "jewel inject parrot please drama vibrant shop omit useful topple burden erase", "secretKey": "72a596cd31bcd8968ac1144a93e3c0b2846eab080fd76a3eb42b55051f394394", "publicKey": "9o9cdHpRLBykY3kMUZbAjVXarZRoe2Bjwioc6aKVrakF", "currency": "SOL", "tradeType": "buy"}

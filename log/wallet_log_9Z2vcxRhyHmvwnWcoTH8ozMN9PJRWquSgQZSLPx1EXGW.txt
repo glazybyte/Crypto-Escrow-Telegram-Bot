@@ -1,2 +1,0 @@
-Wallet generation Successful!
-{"tradeId": "TXID541660140080", "memonic": "dutch disagree know give copper father gaze horn ball cube order shield", "secretKey": "cc351fa5d39665e6c876edbb149afb6041c63d2c18af04cb4b2006a6852188ae", "publicKey": "9Z2vcxRhyHmvwnWcoTH8ozMN9PJRWquSgQZSLPx1EXGW", "currency": "SOL", "tradeType": "buy"}

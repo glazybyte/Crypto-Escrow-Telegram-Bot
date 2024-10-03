@@ -23,8 +23,8 @@ def execute(update: Update, context: CallbackContext, bot_state) -> None:
 
     update.message.reply_text(f'Actual Amount: {input_amount}\nFinal amount to be paid `{final_amount}`\nFee Rate: {fee_percentage}%', parse_mode='Markdown')
 
-description = "Check ping for bot"
-aliases = ['/tax', 'nirmala', '/fee']
+description = "Calculate fee to be included in amount being sent"
+aliases = ['/tax', '/nirmala', '/fee']
 enabled = False
 hidden = True
 OperaterCommand = False
