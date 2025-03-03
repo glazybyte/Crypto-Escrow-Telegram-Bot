@@ -13,11 +13,6 @@ def generateWallet(action_id: str, bot_state: GlobalState):
     if tradeDetails['currency'] == 'LTC':
         import imports.ltcwalletgen as m
         wallet = m.generate_litecoin_wallet();
-        wallet = {
-        'mnemonic': 'grow beauty pledge plunge search pigeon cluster tattoo torch bunker airport illness',
-        'private_key': '57411f07adfbb9f7a8da052b2a6c0ea9bf7c163af7ca78db48fdba3414eb0d2f',
-        'bech32_address': 'ltc1q89vatgyeww7m5cvy4znusrlfhdxwj5avz4zfky'
-    }
         bot_state.save_wallet_info(action_id, wallet['mnemonic'], wallet['private_key'], wallet['bech32_address'], 'LTC',inspect.getmodule(caller_frame[0]).__name__.split('.')[1])
         return wallet['bech32_address']
     elif tradeDetails['currency'] == 'SOL (Solana)' or tradeDetails['currency'] == 'USDT (Solana)':
