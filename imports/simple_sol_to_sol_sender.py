@@ -1,10 +1,13 @@
-import base58, traceback
+import base64
+import base58, traceback, os
 from solathon.core.instructions import transfer
 from solathon import Client, Transaction, PublicKey, Keypair
 from decimal import Decimal
-
 from globalState import GlobalState
 from imports.utils import log_message
+from solana.constants import SYSTEM_PROGRAM_ID
+from solathon.core.instructions import Instruction, AccountMeta
+import struct
 
 log_file = ''
 def sol_to_lamports(sol_amount_str):
@@ -14,33 +17,96 @@ def sol_to_lamports(sol_amount_str):
     lamports = int(sol_amount * Decimal(1_000_000_000))
     return lamports
 
-def send_transaction(hex_private_key, recipient_address, sol_amount_str, log_file):
+def is_account_initialized(client: Client, pub_key):
+    """Check if a Solana account is initialized (exists)."""
+    try: # idk why get_account_info doesn't give None as result for non existent account ;(
+        account_info = client.get_account_info(pub_key)
+        if account_info is None or "error" in account_info:
+            return False  # Account is not initialized
+        
+        balance = account_info.get("lamports", 0)
+        return balance > 0  # Returns True if initialized
+    except Exception as e:
+        return False  # Account does not exist or API error
+
+def send_transaction(hex_private_key, recipient_address, sol_amount_str, log_file, tradeDetails,  fee_payer_private_key ):
     try: 
         client = Client("https://api.mainnet-beta.solana.com")
 
+        RENT_EXEMPT_BALANCE = client.get_minimum_balance_for_rent_exemption(0)
+
+        brokerAddress = None
+        if tradeDetails['brokerTrade']:
+            brokerAddress = tradeDetails['brokerAddress']
+        
         #Escrow Wallet
         private_key_base58 = base58.b58encode(bytes.fromhex(hex_private_key)).decode('utf-8')
-        # Initialize the wallet with the private key
         keypair = Keypair.from_private_key(private_key_base58)
+        #Fee Wallet
+        fee_wallet_key_base58 = base58.b58encode(bytes.fromhex(fee_payer_private_key)).decode('utf-8')
+        fee_wallet_keypair = Keypair.from_private_key(fee_wallet_key_base58)
 
-        amount = sol_to_lamports(sol_amount_str)
-        fee = 5000  # example fee in lamports (0.000005 SOL)
-        send_amount = amount - fee
         
-        # Ensure the amount to send is greater than zero
+        our_fee = sol_to_lamports(tradeDetails['fee'])
+        broker_fee = sol_to_lamports(tradeDetails['broker_fee'])
+        sol_amount_str = Decimal(sol_amount_str) 
+        amount = sol_to_lamports(sol_amount_str) - our_fee - broker_fee
+        fee = 5000
+        send_amount = amount
+        
+        
         if send_amount <= 0:
             raise ValueError("The amount to send is too low to cover the transaction fee.")
         
-        # Create transfer instruction
+        
+
+        # Create transfer instructions
+        instructions = []
+        
+        #Dev's fee cut
+
+        if our_fee>0:
+            
+            instruction = transfer(
+                from_public_key=keypair.public_key,
+                to_public_key=fee_wallet_keypair.public_key, 
+                lamports=our_fee
+            )
+            instructions.append(instruction)
+
+
+        # Broker's cut
+
+        if tradeDetails['broker_fee']>0:
+            broker_acc_initialized = is_account_initialized(client, PublicKey(brokerAddress))
+            a = broker_fee if broker_acc_initialized else max(broker_fee, RENT_EXEMPT_BALANCE)
+            
+            instruction = transfer(
+                from_public_key=keypair.public_key,
+                to_public_key=PublicKey(brokerAddress), 
+                lamports=a
+            )
+            instructions.append(instruction)
+        
+       
+        # Recepient's amount
+
+        send_amount -= fee
+        b = send_amount if broker_acc_initialized else min((send_amount+broker_fee-RENT_EXEMPT_BALANCE), send_amount)
+        sender_balance = client.get_balance(keypair.public_key)
+        change = sender_balance-our_fee-a-b-fee
+        if change>0:
+            b+=change
         instruction = transfer(
             from_public_key=keypair.public_key,
             to_public_key=PublicKey(recipient_address), 
-            lamports=send_amount
+            lamports=b
         )
+        instructions.append(instruction)
 
-        # Create transaction
-        transaction = Transaction(instructions=[instruction], signers=[keypair])
 
+        transaction = Transaction(instructions=instructions, signers=[keypair])
+        # print(transaction.instructions)
         # Send the transaction
         result = client.send_transaction(transaction)
         return result
@@ -64,9 +130,16 @@ def simple_sol_to_sol_transaction(action_id, bot_state: GlobalState):
     hex_private_key = walletDetails['secretKey']
     recipient_address = tradeDetails['sellerAddress']
     amount_to_send = tradeDetails["tradeAmount"] 
-
+    
     log_message(f"Initiating transaction for Trade ID: {action_id}", log_file)
     log_message(f"Sender: {walletDetails['publicKey']}, Recipient: {recipient_address}, Amount: {amount_to_send} USDT", log_file)
 
-    response = send_transaction(hex_private_key, recipient_address, amount_to_send, log_file)
+    response = send_transaction(hex_private_key, recipient_address, amount_to_send, log_file, tradeDetails, os.getenv('SOLANA_FEE_PAYER_SECRET'))
     log_message(f"Transaction response: {response}", log_file)
+
+
+
+# TEst run2
+
+
+

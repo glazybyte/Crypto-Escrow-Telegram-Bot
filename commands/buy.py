@@ -26,12 +26,15 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
     tx_id = "TXID"+''.join([str(random.randint(0, 9)) for _ in range(12)])
     tx_details = {
         "buyer": str(update.message.from_user.id),
-        "buyer_username": update.message.from_user.username,
-        "seller_username": context.bot.get_chat(item_details['seller']).username,
+        "buyer_username": update.message.from_user.username if update.message.from_user.username else update.message.from_user.full_name,
+        "seller_username": context.bot.get_chat(item_details['seller']).username if context.bot.get_chat(item_details['seller']).username else context.bot.get_chat(item_details['seller']).full_name,
         "item_id": context.args[0],
+        "timestamp": int(time.time()),
         "currency": item_details['currency'], #In case i add a functionality for an item to change currency later
         "itemAmount": 1,
         "tradeAmount": item_details['price'],
+        "fee": 0,
+        "fee_percentage" : 0,
         "ourAddress": '',
         "openUpto": 0, #
         "status": "open",
@@ -54,8 +57,14 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
     tx_details['openUpto'] = int(time.time())+(10*60)
     tx_details['lastRefresh'] = int(time.time())
     tx_details['message_id'] = message.message_id
-    tx_details['payment_timeout'] = bot_state.add_timeout(10*60,tx_id)
-    
+    tx_details['payment_timeout'] = bot_state.add_timeout(10*60,tx_id, 'commands.buy')
+    tx_details['fee_percentage'] = bot_state.config['usdt_fee_percentage']/100
+    tx_details['fee'] = calc_fee(tx_details['tradeAmount'], tx_details['fee_percentage'], tx_details['currency'], True)
+    tx_details['tradeAmount'] = Decimal(tx_details['tradeAmount'])
+    tx_details['tradeAmount'] += tx_details['fee']
+    tx_details['tradeAmount'] = str(tx_details['tradeAmount'])
+    tx_details['fee'] = str(tx_details['fee'])
+    tx_details['fee_percentage'] = str(tx_details['fee_percentage'])
     reply_markup = InlineKeyboardMarkup([
         [InlineKeyboardButton("Refresh Time", callback_data='option_16')],
         [InlineKeyboardButton("I have Sent", callback_data='option_17')],
@@ -67,7 +76,7 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
             [
                 context.bot.edit_message_text, 
                 {
-                    'text':f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: 10min\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Open\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
+                    'text':f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗘𝘀𝗰𝗿𝗼𝘄 𝗙𝗲𝗲:{str(tx_details['fee'])} ({str(tx_details['fee_percentage']*100)}%)\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: 10min\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Open\n\nSend only `{tx_details['tradeAmount']}` *{tx_details['currency']}* to address below\n`{tx_details['ourAddress']}` \n\n *NOTE:* If sending from an Exchange, be sure to withdraw this amount *plus Exchange's fee*",
                     'reply_markup':reply_markup,
                     'chat_id':message.chat_id,
                     'message_id':message.message_id,
@@ -103,10 +112,13 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
             query.answer(text=f"Try to refresh time after {slowmode}sec", show_alert=True)
             return
         if time_left <= 0:
-            query.edit_message_text(
-                parse_mode=ParseMode.MARKDOWN,
-                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Closed\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
-            )
+            try: 
+                query.edit_message_text(
+                    parse_mode=ParseMode.MARKDOWN,
+                    text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Closed\n\nSend only {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`\n\n *NOTE:* If sending from an Exchange, be sure to withdraw this amount *plus Exchange's fee*",
+                )
+            except:
+                pass
             #close Transaction Function
             return
         else:
@@ -126,11 +138,15 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
                 reply_markup = InlineKeyboardMarkup([
                     [InlineKeyboardButton("Refresh Time", callback_data='option_16')]
                 ])
-            query.edit_message_text(
-                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: {msg_piece}n\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
-                reply_markup=reply_markup,
-                parse_mode=ParseMode.MARKDOWN
-            )
+            try:
+                query.edit_message_text(
+                    text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: {msg_piece}\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}` \n\n *NOTE:* If sending from an Exchange, be sure to withdraw this amount *plus Exchange's fee*",
+                    reply_markup=reply_markup,
+                    parse_mode=ParseMode.MARKDOWN
+                )
+            except:
+                pass
+    
     elif query.data == 'option_17':
         bot_state.set_waiting_for_input(str(query.from_user.id), [query.message, {'tx_id': tx_id}], 'button')
         context.bot.send_message(chat_id=tx_details['buyer'], text="━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\nAlrighty Right! We will check your payment status every minute now until we receive it, once confirmed in Blockchain, we will proceed.")
@@ -140,11 +156,14 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState) -> 
         ])
         tx_details['status'] = 'open[awaiting_payment]'
         bot_state.set_tx_var(tx_id, tx_details)
-        query.edit_message_text(
-            parse_mode=ParseMode.MARKDOWN,
-            text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Awaiting Blockchain Confirmation\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}`",
-            reply_markup=reply_markup
-        )
+        try:
+            query.edit_message_text(
+                parse_mode=ParseMode.MARKDOWN,
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{tx_id}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗦𝗲𝗹𝗹𝗲𝗿: @{tx_details['seller_username']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: `{tx_details['tradeAmount']}` *{tx_details['currency']}*\n𝗗𝗲𝗹𝗶𝘃𝗲𝗿𝘆 𝗠𝗼𝗱𝗲: {item_details['type']}\n𝗧𝗶𝗺𝗲 𝗥𝗲𝗺𝗮𝗶𝗻𝗶𝗻𝗴: {time_text}\n𝗜𝗻𝘃𝗼𝗶𝗰𝗲 𝗦𝘁𝗮𝘁𝘂𝘀: Awaiting Blockchain Confirmation\n\nSend only {tx_details['tradeAmount']} {tx_details['currency']} to address below\n`{tx_details['ourAddress']}` \n\n *NOTE:* If sending from an Exchange, be sure to withdraw this amount *plus Exchange's fee*",
+                reply_markup=reply_markup
+            )
+        except:
+            pass
     query.answer()
 def timeout_up(context, bot, bot_state: GlobalState):
     tx_details = bot_state.get_tx_var(context)

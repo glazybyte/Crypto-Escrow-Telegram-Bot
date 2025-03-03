@@ -17,14 +17,15 @@ def ltcTransactionChecker(publicKey):
                         break
                 if amount_received > 0:
                     if latest_transaction.get('confirmations') >= 3:
-                        return {"code": "confirmed", "amount": amount_received_ltc , "publicKey": publicKey}
+                        hash = latest_transaction['hash']
+                        return [{"code": "confirmed", "amount": amount_received_ltc , "publicKey": publicKey}, f"https://blockchair.com/litecoin/transaction/{hash}"]
                     else:
-                        return {"code": "unconfirmed", "amount": amount_received_ltc , "publicKey": publicKey}
+                        return [{"code": "unconfirmed", "amount": amount_received_ltc , "publicKey": publicKey}, f""]
                 else:
-                    return {"code": "undetected", "publicKey": publicKey}
+                    return [{"code": "undetected", "publicKey": publicKey}, f""]
             else:
-                return {"code": "undetected" , "publicKey": publicKey}
+                return [{"code": "undetected" , "publicKey": publicKey}, f""]
         else:
-            return {"code": "error", "message": f"Failed to retrieve data. Status code: {response.status_code}" , "publicKey": publicKey}
+            return [{"code": "error", "message": f"Failed to retrieve data. Status code: {response.status_code}" , "publicKey": publicKey}, f""]
     except Exception as e:
-        return {"code": "error", "message": f"An error occurred: {e}" , "publicKey": publicKey}
+        return [{"code": "error", "message": f"An error occurred: {e}" , "publicKey": publicKey}, f""]

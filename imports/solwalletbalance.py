@@ -1,7 +1,7 @@
 from solana.rpc.api import Client
 from spl.token.instructions import get_associated_token_address
 from solders.pubkey import Pubkey
-import base58
+import base58, requests
 from decimal import Decimal
 USDT_MINT_ADDRESS = 'Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB'
 def get_finalized_sol_balance(public_address: str, spl_token: str = None) -> float:
@@ -21,10 +21,23 @@ def get_finalized_sol_balance(public_address: str, spl_token: str = None) -> flo
             else:
                 amount = Decimal(response.value.ui_amount_string)
         else:
-            amount = (int(response.value) / 10**9)  # Convert lamports to SOL
+            amount = (int(response.value) / Decimal(10**9))  # Convert lamports to SOL
     else:
         amount = 0  
-    return {"publicKey": public_address, "amount": amount}
+    return [{"publicKey": public_address, "amount": amount}, f"https://solscan.io/account/{public_address}"]
+
+def get_sol_price():
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    params = {"ids": "solana", "vs_currencies": "usd"}
+    
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()  # Raise an error for bad responses (4xx, 5xx)
+        data = response.json()
+        return data.get("solana", {}).get("usd", 0)
+    except requests.RequestException as e:
+        print(f"Error fetching SOL price: {e}")
+        return None
 
 
 # Testing

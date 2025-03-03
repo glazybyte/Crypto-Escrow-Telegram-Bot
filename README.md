@@ -18,11 +18,13 @@ Try the bot at: [Here](https://t.me/Escrow_shield_bot)
 - **Supported Networks:**
    - Solana
    - Litecoin
-   - Dogecoin
+   - Dogecoin (disabled currently)
+   - BSC (BEP-20)
 
 - **Planned Networks:**
 
-   - Binance Smart Chain (BSC)
+   - Tron (TRC-20)
+   - TON
 
 - **Excluded Networks:**
 
@@ -48,7 +50,7 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
 
 4. Install a extra library
    ```bash
-   pip install solathon==1.0.2
+   pip install solathon==1.0.7
    ```
 
 5. edit `example.env`:
@@ -57,7 +59,7 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
    
    - Get Blockcypher API key from [here](https://accounts.blockcypher.com/)
    
-   **Note:** PRIVATE_KEY and SOLANA_FEE_PAYER_SECRET will be generated upon the first run. Be sure to save these values securely.
+   **Note:** PRIVATE_KEY, SOLANA_FEE_PAYER_SECRET and BSC_FEE_PAYER_SECRET will be generated upon the first run. Be sure to save these values securely.
 
    ```python
    BOT_TOKEN = '73777777:jFc4Tvs0bM' # Get this from Bot Father
@@ -80,7 +82,11 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
 
    Use phpmyadmin or mysql terminal to run the commands in `db.sql` to create tables
 
-7. Start the bot
+7. edit `admin.config`
+
+   Add information about bot like: owner id, fee wallet details in this file
+
+8. Start the bot
 
    Rename `example.env` to `.env` and you are good to go for starting the bot
    ```bash

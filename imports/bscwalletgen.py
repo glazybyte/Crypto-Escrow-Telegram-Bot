@@ -18,8 +18,8 @@ def generate_bsc_wallet():
     }
 
 # Example usage
-# if __name__ == "__main__":
-#     wallet = generate_bsc_wallet()
-#     print("Mnemonic:", wallet['mnemonic'])
-#     print("Private Key:", wallet['private_key'])
-#     print("Address:", wallet['address'])
+if __name__ == "__main__":
+    wallet = generate_bsc_wallet()
+    print("Mnemonic:", wallet['mnemonic'])
+    print("Private Key:", wallet['private_key'])
+    print("Address:", wallet['address'])

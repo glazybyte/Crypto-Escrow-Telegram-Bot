@@ -1,4 +1,4 @@
-import os, hashlib, base64, re
+import os, hashlib, base64, re, json, requests, collections, base58, math
 from decimal import Decimal, InvalidOperation
 from concurrent.futures import ThreadPoolExecutor
 from telegram.ext import CallbackContext
@@ -10,7 +10,8 @@ from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
 from Crypto.Cipher import AES
 from datetime import datetime
-
+from eth_account import Account
+from web3 import Web3
 def get_current_datetime():
     return datetime.now().strftime("[%d%b%y::%H:%M:%S]")
 
@@ -29,22 +30,22 @@ def log_message(message, log_file="error_log", mainThread=False):
         '------Log Entry Close-------\n'
     )
     print(message)
-    with open(log_file, 'a') as f:
+    message = message.encode("utf-8", "ignore").decode("utf-8")
+    with open(log_file, 'a', encoding="utf-8") as f:
         f.write(message + '\n')
 
 
 
-def validate_text(input_text, extra = []):
-    allowed_pattern = r'^[a-zA-Z0-9 ,\-$@.]+$'
+def validate_text(input_text, extra=[]):
+    allowed_pattern = r'^[a-zA-Z0-9 ,\-$@./:]+$'
     if re.match(allowed_pattern, input_text):
         return True
     else:
         for char in input_text:
-            if not re.match(r'[a-zA-Z0-9 ,\-$@.]', char):
+            if not re.match(r'[a-zA-Z0-9 ,\-$@./:]', char):
                 if char not in extra:
                     return f"Illegal character found: '{char}'"
         return True
-        #return "Invalid input detected."
 
 def is_number(input_string):
     try:
@@ -71,7 +72,10 @@ def is_valid_user(input_value, context: CallbackContext):
         #     if not input_value.startswith("@"):
         #         input_value = f"@{input_value}"
         #     user_chat = context.bot.get_chat(input_value)
-        return user_chat.id
+        if hasattr(user_chat, "id"):
+            return user_chat.id
+        else:
+            return False
     
     except (BadRequest, ValueError):
         return False
@@ -122,20 +126,9 @@ def validate_bsc_address(address: str) -> bool:
     if not re.match(r"^0x[a-fA-F0-9]{40}$", address):
         return False
     
-    #someone recommended me below 2 line tch
     if address != address.lower() and address != address.upper():
-        return is_checksum_valid(address)
+        return Web3.is_checksum_address(address)  # ✅ Corrected function
     
-    return True
-
-def is_checksum_valid(address: str) -> bool:
-    address = address.replace('0x', '')
-    address_hash = hashlib.sha3_256(address.lower().encode('utf-8')).hexdigest()
-    for i in range(40):
-        if int(address_hash[i], 16) > 7 and address[i].upper() != address[i]:
-            return False
-        elif int(address_hash[i], 16) <= 7 and address[i].lower() != address[i]:
-            return False
     return True
 
 def multi_task(task_list):
@@ -198,3 +191,94 @@ def decrypt_text(encrypted_data):
 
     return decrypted_text
 
+# def gen_escrow_text(escrow, hide_id=False):
+    
+#     escrow_text = f"Escrow ID: {escrow['escrow_id']}\n"
+#     if not hide_id:
+#         escrow_text = f"Sender: {escrow['sender']}\n"
+#     escrow_text += f"Receiver: {escrow['receiver']}\n"
+#     escrow_text += f"Amount: {escrow['amount']} {escrow['symbol']}\n"
+#     escrow_text += f"Deadline: {escrow['deadline']}\n"
+#     escrow_text += f"Status: {escrow['status']}\n"
+#     return escrow_text
+
+def calc_fee(amount, fee_rate, symbol, ourfee=False):
+    try:
+        amount = Decimal(amount)
+        fee_rate = Decimal(fee_rate)
+        fee = Decimal(amount * fee_rate)
+        if ourfee:
+            if symbol == "USDT (BSC Bep-20)":
+                fee += Decimal('0.1')
+            elif symbol == "USDT (TRC20)":
+                fee += get_energy_fee_in_usdt()
+        if symbol in ["SOL (Solana)", "LTC", "BNB"]:
+            fee = fee.quantize(Decimal('0.0000001'))
+         
+        else:
+            fee = fee.quantize(Decimal('0.001'))
+        
+        return fee
+    except InvalidOperation:
+        return "Invalid amount or fee rate"
+
+
+def escape_markdown_v2(text):
+    escape_chars = r'_*[]()~`>#+-=|{}.!'
+    return ''.join(f'\\{char}' if char in escape_chars else char for char in text)
+
+def private_key_to_bsc_address(private_key):
+    account = Account.from_key(private_key)
+    return account.address
+
+def get_trx_price():
+    url = "https://api.coingecko.com/api/v3/simple/price"
+    params = {
+        "ids": "tron",
+        "vs_currencies": "usd"
+    }
+    try:
+        resp = requests.get(url, params=params)
+        data = resp.json()
+        print(data)
+        return data.get("tron", {}).get("usd", False)
+    except requests.RequestException as e:
+        return False
+
+def get_estimated_energy_cost():
+    # Credits: https://gist.github.com/andelf/65121c2c7f81e773f5f879d9992843f8
+    # Energy costs in trx for USDT transafer on tron chain
+    CNTR = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
+    PAGE = 1
+    PRICE = 140
+    try:
+        url = f"https://api.trongrid.io/v1/accounts/{CNTR}/transactions?only_confirmed=true&only_to=true&limit=200&search_internal=false"
+
+        resp = requests.get(url)
+        payload = resp.json()
+        data = payload['data']
+
+        for i in range(1, PAGE):
+            # print(f"paging ... {i}/{PAGE}")
+            url = payload['meta']['links']['next']
+            resp = requests.get(url)
+            payload = resp.json()
+            data += payload['data']
+        stat = collections.defaultdict(list)
+        txns = 0
+        for txn in data:
+            if (
+                txn.get('energy_usage_total', 0) > 0
+                and txn['raw_data']['contract'][0]['parameter']['value']['contract_address']
+                == base58.b58decode_check(CNTR).hex()
+            ):
+                txns += 1
+                stat[txn['ret'][0]['contractRet']].append(txn['energy_usage_total'])
+        return (max(stat['SUCCESS']) * PRICE) / 1_000_000
+    except Exception as e:
+        return False
+
+def get_energy_fee_in_usdt():
+    x = get_estimated_energy_cost()
+    y = get_trx_price()
+    return math.ceil(x * y) if x and y else 6

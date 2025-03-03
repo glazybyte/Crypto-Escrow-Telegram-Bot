@@ -5,6 +5,7 @@ from telegram.ext import Updater, CommandHandler, CallbackContext, CallbackQuery
 from telegram.error import TelegramError
 from imports.ltc_transaction_checker import ltcTransactionChecker
 from imports.solwalletbalance import get_finalized_sol_balance, USDT_MINT_ADDRESS
+from imports.bsc_wallet_balance import get_finalized_bsc_balance, USDT_CONTRACT_ADDRESS
 from imports.doge_transaction_checker import dogeTransactionChecker
 from decimal import Decimal
 
@@ -28,18 +29,22 @@ def execute(bot_state: GlobalState, bot):
                         print(f"[Wallet Checker]:: Initiating DOGE wallet check for {key}")
                         future = executor.submit(dogeTransactionChecker, key)
                         futures.append(future)
-                    elif value['currency'] == "SOL (Solana)":
-                        print(f"[Wallet Checker]:: Initiating SOL (Solana) wallet check for {key}")
-                        future = executor.submit(get_finalized_sol_balance, key)
-                        futures.append(future)
                     elif value['currency'] == "USDT (Solana)":
                         print(f"[Wallet Checker]:: Initiating USDT (Solana) wallet check for {key}")
                         future = executor.submit(get_finalized_sol_balance, key, USDT_MINT_ADDRESS)
                         futures.append(future)
+                    elif value['currency'] == "SOL (Solana)":
+                        print(f"[Wallet Checker]:: Initiating SOL (Solana) wallet check for {key}")
+                        future = executor.submit(get_finalized_sol_balance, key)
+                        futures.append(future)
+                    elif value['currency'] == "USDT (BSC Bep-20)":
+                        print(f"[Wallet Checker]:: Initiating USDT (BSC Bep-20) wallet check for {key}")
+                        future = executor.submit(get_finalized_bsc_balance, key, USDT_CONTRACT_ADDRESS)
+                        futures.append(future)
                     elif value['currency'] == "BNB (BSC Bep-20)":
                         print(f"[Wallet Checker]:: Initiating BNB (BSC Bep-20) wallet check for {key}")
-                        #future = executor.submit(get_finalized_sol_balance, key, USDT_MINT_ADDRESS)
-                        #futures.append(future)
+                        future = executor.submit(get_finalized_bsc_balance, key)
+                        futures.append(future)
                     
                 for future in futures:
                     response = future.result()
@@ -54,6 +59,8 @@ def execute(bot_state: GlobalState, bot):
         time.sleep(20)
 
 def handleResponse(response, bot_state: GlobalState, bot):
+    arg = response[1]
+    response = response[0]
     wallet = bot_state.get_address_info(response['publicKey'])
     log_file = response['publicKey']
     tradeDetails = {}
@@ -71,10 +78,10 @@ def handleResponse(response, bot_state: GlobalState, bot):
             bot_state.remove_address_from_queue(response['publicKey'])
             log_message(f"[LTC wallet Checker]:: {response['publicKey']} Transaction for {response['amount']} detected", log_file)
             if(float(response['amount'])>=float(tradeDetails["tradeAmount"])):
-                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
+                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot, arg)
             else:
                 if type == "TRADE":
-                    handle_escrow_insuff(response, bot, tradeDetails, bot_state)
+                    handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet)
                 elif type == "TX":
                     handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
         # print(f"Confirmed transaction: {response['amount']} LTC")
@@ -91,10 +98,10 @@ def handleResponse(response, bot_state: GlobalState, bot):
             log_message(f"[DOGE wallet Checker]:: {response['publicKey']} Transaction for {response['amount']} detected", log_file)
             
             if(float(response['amount'])>=float(tradeDetails["tradeAmount"])):
-                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
+                proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot, arg)
             else:
                 if type == "TRADE":
-                    handle_escrow_insuff(response, bot, tradeDetails, bot_state)
+                    handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet)
                 elif type == "TX":
                     handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
         elif isinstance(response, dict) and response.get("code") == "unconfirmed":
@@ -106,32 +113,38 @@ def handleResponse(response, bot_state: GlobalState, bot):
             log_message(f"Error: {response}", log_file)
     elif tradeDetails['currency'] == "SOL (Solana)" or tradeDetails['currency'] == "USDT (Solana)":
         #testing
-        # proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot)
+        # proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot, arg)
         # bot_state.remove_address_from_queue(response['publicKey'])
         # return
-        if(response["amount"]>= Decimal(tradeDetails["tradeAmount"])):
+        if(Decimal(response["amount"])>= Decimal(tradeDetails["tradeAmount"])):
             print(f"[SOL Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
             bot_state.remove_address_from_queue(response['publicKey'])
-            proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
+            proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot, arg)
         elif response["amount"] == 0:
             print(f"[SOL wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
         else:
             if type == "TRADE":
-                handle_escrow_insuff(response, bot, tradeDetails, bot_state)
+                handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet)
             elif type == "TX":
                 handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
-    # elif tradeDetails['currency'] == "BNB (BSC Bep-20)" or tradeDetails['currency'] == "USDT (BSC Bep-20)":
-    #     if(response["amount"]>= Decimal(tradeDetails["tradeAmount"])):
-    #         print(f"[BSC Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
-    #         bot_state.remove_address_from_queue(response['publicKey'])
-    #         proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot)
-    #     elif response["amount"] == 0:
-    #         print(f"[BSC wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
-    #     else:
-    #         if type == "TRADE":
-    #             handle_escrow_insuff(response, bot, tradeDetails, bot_state)
-    #         elif type == "TX":
-    #             handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
+                handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
+    elif tradeDetails['currency'] == "BNB (BSC Bep-20)" or tradeDetails['currency'] == "USDT (BSC Bep-20)":
+        #testing
+        # proceed_transaction(bot_state, wallet['tradeId'], response, tradeDetails, bot, arg)
+        # bot_state.remove_address_from_queue(response['publicKey'])
+        # return
+        if(Decimal(response["amount"])>= Decimal(tradeDetails["tradeAmount"])):
+            print(f"[BSC Wallet Checker]:: Transaction detected for wallet {tradeDetails['ourAddress']} of {response['amount']} {tradeDetails['currency']}")
+            bot_state.remove_address_from_queue(response['publicKey'])
+            proceed_transaction(bot_state, wallet['tradeId'], wallet, tradeDetails, bot, arg)
+        elif response["amount"] == 0:
+            print(f"[BSC wallet Checker]:: {tradeDetails['ourAddress']} no transactions")
+        else:
+            if type == "TRADE":
+                handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet)
+            elif type == "TX":
+                handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
+                handle_buy_item_insuff(response, bot, tradeDetails, bot_state, wallet)
 
 def handle_escrow_insuff(response, bot, tradeDetails, bot_state, wallet):
     bot_state.remove_address_from_queue(response['publicKey'])
@@ -144,7 +157,7 @@ def handle_buy_item_insuff(response, bot, tx_details, bot_state, wallet):
     bot.send_message(chat_id=tx_details["buyer"], text="Your Transaction seems to have less than the quoted amount in trade, contact @addylad6725 for resolution")
     close_trade(bot_state=bot_state, action_id=wallet['tradeId'], message="close[insuff_funds_receieved]")
 
-def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, bot):
+def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, bot, arg):
     #wallet = bot_state.get_address_info(response['publicKey'])
     if wallet['tradeId'].startswith('TRADE'):
         tradeDetails['status'] = 'open[paid]'
@@ -154,9 +167,14 @@ def proceed_transaction(bot_state: GlobalState, tradeId, wallet, tradeDetails, b
             [InlineKeyboardButton("I have Sent", callback_data='option_9')]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
+        text = f"Buyer has sent the payment to our escrow wallet, You can now safely deliever your product \n\n It's recomended that you keep delievery and working proof to yourself until you receive the payment. \n\n CLick button below after you have delivered it \n"
+        if tradeDetails["currency"] in ["LTC", "DOGE"]:
+            text += f'TX: {arg}'
+        else:
+            text += f'Escrow Wallet: {arg}'
         message = bot.send_message(
             chat_id=tradeDetails["seller"], 
-            text="Buyer has sent the payment to our escrow wallet, You can now safely deliever your product \n\n It's recomended that you keep delievery and working proof to yourself until you receive the payment. \n\n CLick button below after you have delivered it",
+            text=text,
             reply_markup=reply_markup
         )
         bot_state.set_waiting_for_input(tradeDetails["seller"], [message], 'button', 'commands.escrow')
@@ -252,7 +270,7 @@ def timeout_up(context, bot, bot_state: GlobalState):
             bot.send_message(
                 chat_id=tx_details["buyer"],
                 parse_mode=ParseMode.MARKDOWN,
-                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Seller failed to provide you a solution it seems, you can collect your funds by contacting us.",   
+                text=f"━━━━⍟𝗘𝘀𝗰𝗿𝗼𝘄 𝗦𝗵𝗶𝗲𝗹𝗱⍟━━━━\n𝗧𝘅 𝗜𝗗: `{context}`\n𝗜𝘁𝗲𝗺: {item_details['title']}\n𝗡𝗲𝘁 𝗖𝗵𝗮𝗿𝗴𝗲𝘀: {tx_details['tradeAmount']} *{tx_details['currency']}*\n\n Seller failed to provide you a solution it seems, you can collect your funds by contacting us. Use /contact",   
             )
             close_trade(bot_state, context, 'close[manual_delivery_timeout]')
         elif item_details['type'] == 'manual' and tx_details['sellerStatus'] == 'delivered':
@@ -291,6 +309,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         t = bot_state.add_timeout(10*60, tx_id)
         tx_details['product_confirmation_timeout'] = t
         bot_state.set_tx_var(tx_id, tx_details)
+        #close_trade(bot_state, tx_id, 'close[delivered]')
 
     elif query.data == 'option_18' and str(query.from_user.id) == tx_details['buyer']:
         bot_state.remove_timer(tx_details['product_confirmation_timeout'])

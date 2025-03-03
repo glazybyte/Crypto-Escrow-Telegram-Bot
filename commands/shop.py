@@ -74,7 +74,7 @@ def button(update: Update, context: CallbackContext, bot_state: GlobalState):
         stock = item['stock']
         if stock == 0:
            stock = "Out of Stock"
-        msg = msg+f"{item['title']}\n{item['description']}\n*Stock:* {stock}\n*Delivery Type:* {item['type']}\n*Item ID:* `{item['item_id']}`\n\n"
+        msg = msg+f"{item['title']}\n{item['description']}\n*Stock:* {stock}\n*Delivery Type:* {item['type']}\n*Price:* {item['price']} USDT\n*Item ID:* `{item['item_id']}`\n\n"
     keyboard = []
     if(page_numb_to_show+1)<=total_pages:
         keyboard.append([InlineKeyboardButton("Next", callback_data=page_next)])

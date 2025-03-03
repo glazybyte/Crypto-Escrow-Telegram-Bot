@@ -32,8 +32,10 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
        "sellerAddress": "",
        "currency": "USDT (Solana)",
        "tags": 'none' # no use right now, for future if I add browse by category
+        
    }
    itemId = "ITEM"+''.join([str(random.randint(0, 9)) for _ in range(12)])
+   item_details['item_id'] = itemId
    bot_state.add_item(itemId, item_details)
    update.message.reply_text("Enter Title, Description, Price(in USDT), Type('manual' or 'automatic' for delivery type) seperated by comma\nEx: My Item, this is description, 10, automatic")
    
@@ -97,7 +99,8 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
         item_details['stock'] = len(item_details['stockList'])
         item_details['toggle'] = 'enabled'
         bot_state.add_item(waiting_for, item_details)
-        update.message.reply_text(f'Alrighty! your item has been added to your shop\nItem ID: {waiting_for}')
+        print(item_details)
+        update.message.reply_text(f'Alrighty! your item has been added to your shop\nItem ID: `{waiting_for}`')
         return
     elif(item_details['type'] == 'manual'):
         bot_state.clear_waiting_for_input(chat_id)

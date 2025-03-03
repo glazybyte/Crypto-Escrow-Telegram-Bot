@@ -21,7 +21,7 @@ from globalState import GlobalState
 from imports.utils import log_message
 
 
-def get_latest_blockhash():
+def get_latest_blockhash(log_file):
     url = "https://api.mainnet-beta.solana.com"
     headers = {
         "Content-Type": "application/json"
@@ -40,43 +40,43 @@ def get_latest_blockhash():
         blockhash = response_json['result']['value']['blockhash']
         return blockhash
     else:
-        print("Failed to fetch the latest blockhash")
-        print(response_json)
-    try:
-        transaction_json = json.loads(transaction_json_str)
-    except json.JSONDecodeError as e:
-        print(f"Invalid JSON string: {e}")
-        return {"error": f"Invalid JSON string: {e}"}
+        log_message("Failed to fetch the latest blockhash", log_file)
+        log_message(response_json, log_file)
+    # try:
+    #     transaction_json = json.loads(transaction_json_str)
+    # except json.JSONDecodeError as e:
+    #     print(f"Invalid JSON string: {e}")
+    #     return {"error": f"Invalid JSON string: {e}"}
 
-    # Convert the transaction to bytes and then encode it in base64
-    transaction_bytes = json.dumps(transaction_json).encode('utf-8')
-    transaction_base58 = base58.b58encode(transaction_bytes).decode('utf-8')
+    # # Convert the transaction to bytes and then encode it in base64
+    # transaction_bytes = json.dumps(transaction_json).encode('utf-8')
+    # transaction_base58 = base58.b58encode(transaction_bytes).decode('utf-8')
 
-    # Create the payload for the RPC request
-    payload = {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "sendTransaction",
-        "params": [transaction_base58]
-    }
+    # # Create the payload for the RPC request
+    # payload = {
+    #     "jsonrpc": "2.0",
+    #     "id": 1,
+    #     "method": "sendTransaction",
+    #     "params": [transaction_base58]
+    # }
 
-    # Send the transaction via a POST request
-    headers = {"Content-Type": "application/json"}
-    response = requests.post(rpc_url, headers=headers, json=payload)
+    # # Send the transaction via a POST request
+    # headers = {"Content-Type": "application/json"}
+    # response = requests.post(rpc_url, headers=headers, json=payload)
 
-    # Check for HTTP request errors
-    try:
-        response.raise_for_status()
-    except requests.exceptions.HTTPError as err:
-        print(f"HTTP error occurred: {err}")
-        return {"error": str(err)}
+    # # Check for HTTP request errors
+    # try:
+    #     response.raise_for_status()
+    # except requests.exceptions.HTTPError as err:
+    #     print(f"HTTP error occurred: {err}")
+    #     return {"error": str(err)}
 
-    # Parse the response JSON
-    result = response.json()
+    # # Parse the response JSON
+    # result = response.json()
 
-    return result
+    # return result
 
-def send_transaction(sender_private_key, fee_payer_private_key, recipient_address, send_amount, log_file):
+def send_transaction(sender_private_key, fee_payer_private_key, recipient_address, send_amount, log_file, tradeDetails, brokerAddress=None):
     try:
         # Connect to Solana client
         client = Client("https://api.mainnet-beta.solana.com")
@@ -100,23 +100,40 @@ def send_transaction(sender_private_key, fee_payer_private_key, recipient_addres
         fee_payer = Keypair.from_base58_string(fee_payer_private_key)
         usdt_mint_address_bytes = base58.b58decode(usdt_mint_address)
         recipient_address_bytes = base58.b58decode(recipient_address)
+        broker_address_bytes = None
+        if tradeDetails['broker_fee'] > 0:
+            broker_address_bytes = base58.b58decode(brokerAddress) 
 
         sender_token_address = get_associated_token_address(sender.pubkey(), Pubkey(usdt_mint_address_bytes))
         fee_payer_token_address = get_associated_token_address(fee_payer.pubkey(), Pubkey(usdt_mint_address_bytes))
         recipient_token_address = get_associated_token_address(Pubkey(recipient_address_bytes), Pubkey(usdt_mint_address_bytes))
-        amount = send_amount * Decimal(1_000_000)
-        ourfee = Decimal(0.02) * amount
-        finalamount = int(amount-ourfee)
-        ourfee = int(ourfee)
+        broker_token_address = None
+        if tradeDetails['broker_fee'] > 0:
+            broker_token_address = get_associated_token_address(Pubkey(broker_address_bytes), Pubkey(usdt_mint_address_bytes))
+        # amount = send_amount * Decimal(1_000_000)
+        # ourfee = Decimal(0.02) * amount
+        # finalamount = int(amount-ourfee)
+        # ourfee = int(ourfee)
 
+        amount = (Decimal(send_amount)-Decimal(tradeDetails["fee"])) * Decimal(1_000_000)
+        ourfee = Decimal(tradeDetails["fee"]) * Decimal(1_000_000)
+        brokerfee = Decimal(tradeDetails['broker_fee']) * Decimal(1_000_000)
+        finalamount = int(amount-ourfee-brokerfee)
+        ourfee = int(ourfee)
+        brokerfee = int(brokerfee)
+
+        spl_creation_fee = int(Decimal(0.39) * Decimal(1_000_000))
+
+        # Recepient's USDT account creation
         account_info = client.get_account_info(recipient_token_address)
         instruction =[]
+        
         if account_info.value is None:
-            log_message("Token account does not exist. Creating token account...", log_file)
+            log_message("Token account does not exist. Creating token account for receiver wallet...", log_file)
             log_message("adding charges to out wallet", log_file)
-            spl_creation_fee = int(Decimal(0.34) * Decimal(1_000_000))
             ourfee+=spl_creation_fee
             finalamount-=spl_creation_fee
+
             instruction.append(
                 create_associated_token_account(
                     payer=fee_payer.pubkey(),
@@ -124,6 +141,36 @@ def send_transaction(sender_private_key, fee_payer_private_key, recipient_addres
                     mint=Pubkey(usdt_mint_address_bytes)
                 )
             )
+        # Dev's USDT account creation
+        account_info = client.get_account_info(fee_payer_token_address)
+        if account_info.value is None:
+            log_message("Token account does not exist. Creating token account for fee payer wallet...", log_file)
+            
+            instruction.append(
+                create_associated_token_account(
+                    payer=fee_payer.pubkey(),
+                    owner=Pubkey(fee_payer_token_address),
+                    mint=Pubkey(usdt_mint_address_bytes)
+                )
+            )
+        # Broker's USDT account creation
+        if tradeDetails['broker_fee'] > 0:
+            account_info = client.get_account_info(broker_token_address)
+            if account_info.value is None:
+                log_message("Token account does not exist. Creating token account for broker wallet...", log_file)
+                log_message("adding charges to out wallet", log_file)
+                
+                ourfee+=spl_creation_fee
+                finalamount-=spl_creation_fee
+
+                instruction.append(
+                    create_associated_token_account(
+                        payer=fee_payer.pubkey(),
+                        owner=Pubkey(broker_address_bytes),
+                        mint=Pubkey(usdt_mint_address_bytes)
+                    )
+                )
+        # Dev's part in amount
         instruction.append(
             transfer_checked(
                 TransferCheckedParams(
@@ -132,12 +179,27 @@ def send_transaction(sender_private_key, fee_payer_private_key, recipient_addres
                     mint=Pubkey(usdt_mint_address_bytes),
                     dest=fee_payer_token_address,
                     owner=sender.pubkey(),
-                    amount=ourfee,  # Specify the amount of tokens to transfer
-                    decimals=6  # Number of decimal places for the token
+                    amount=ourfee,
+                    decimals=6
                 )
             )
         )
-
+        # Broker's part in amount
+        if tradeDetails['broker_fee'] > 0:
+            instruction.append(
+            transfer_checked(
+                TransferCheckedParams(
+                    program_id=Pubkey(base58.b58decode("TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA")),
+                    source=sender_token_address,
+                    mint=Pubkey(usdt_mint_address_bytes),
+                    dest=broker_token_address,
+                    owner=sender.pubkey(),
+                    amount=brokerfee,
+                    decimals=6
+                )
+            )
+        )
+        # Recepient's part in amount
         instruction.append(
             transfer_checked(
                 TransferCheckedParams(
@@ -146,18 +208,19 @@ def send_transaction(sender_private_key, fee_payer_private_key, recipient_addres
                     mint=Pubkey(usdt_mint_address_bytes),
                     dest=recipient_token_address,
                     owner=sender.pubkey(),
-                    amount=finalamount,  # Specify the amount of tokens to transfer
-                    decimals=6  # Number of decimal places for the token
+                    amount=finalamount,  
+                    decimals=6  
                 )
             )
         )
-        recent_hash= get_latest_blockhash()
+        recent_hash= get_latest_blockhash(log_file)
         message1 = Message(
             instructions=instruction,
             payer=fee_payer.pubkey(),
-        # recent_blockhash=Hash.from_string(get_latest_blockhash())
+        # recent_blockhash=Hash.from_string(get_latest_blockhash(log_file))
         )
         tempTrans = Transaction(from_keypairs=[fee_payer, sender], message=message1, recent_blockhash=Hash.from_string(recent_hash))
+        print(tempTrans)
         tempTrans.sign([fee_payer,sender], recent_blockhash=Hash.from_string(recent_hash))
         transaction = VersionedTransaction.from_bytes(tempTrans.__bytes__())
 
@@ -193,9 +256,36 @@ def send_usdt_sol_transaction(action_id, bot_state: GlobalState):
     log_message(f"Initiating transaction for Trade ID: {action_id}", log_file)
     log_message(f"Sender: {walletDetails['publicKey']}, Recipient: {recipient_address}, Amount: {send_amount} USDT", log_file)
 
-
-    send_transaction(sender_private_key, os.getenv('SOLANA_FEE_PAYER_SECRET'), recipient_address, send_amount, log_file)
+    if tradeDetails['brokerTrade']:
+        send_transaction(sender_private_key, os.getenv('SOLANA_FEE_PAYER_SECRET'), recipient_address, send_amount, log_file, tradeDetails, tradeDetails['brokerAddress'])
+    else:
+        send_transaction(sender_private_key, os.getenv('SOLANA_FEE_PAYER_SECRET'), recipient_address, send_amount, log_file, tradeDetails)
     log_message(f"Transaction for Trade ID {action_id} completed", log_file)
+
+
+# def get_usdt_account_creation_fee():
+#     SOLANA_RPC_URL = "https://api.mainnet-beta.solana.com"
+#     SOL_PRICE_API = "https://api.coingecko.com/api/v3/simple/price?ids=solana&vs_currencies=usd"
+#     headers = {"Content-Type": "application/json"}
+#     payload = {
+#         "jsonrpc": "2.0",
+#         "id": 1,
+#         "method": "getMinimumBalanceForRentExemption",
+#         "params": [165]
+#     }
+#     response = requests.post(SOLANA_RPC_URL, headers=headers, data=json.dumps(payload))
+#     rent_exempt_balance = response.json()["result"]
+#     rent_exempt_balance_sol = rent_exempt_balance / 1_000_000_000
+#     sol_price_response = requests.get(SOL_PRICE_API)
+#     sol_price = sol_price_response.json()["solana"]["usd"]
+#     rent_exempt_balance_usd = rent_exempt_balance_sol * sol_price
+
+#     return {
+#         "rent_exempt_balance_lamports": rent_exempt_balance,
+#         "rent_exempt_balance_sol": rent_exempt_balance_sol,
+#         "sol_price_usd": sol_price,
+#         "rent_exempt_balance_usd": rent_exempt_balance_usd
+#     }
 
 #LOVE you Solana
 

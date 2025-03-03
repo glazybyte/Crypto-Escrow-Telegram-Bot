@@ -9,10 +9,11 @@ blockcypher==1.0.93
 hdwallet==2.2.1
 solana==0.34.3
 solders==0.21.0
-#solathon==1.0.2
+#solathon==1.0.7
 sqlalchemy
 pymysql
 eth_account
 python-dotenv==1.0.1
 cryptography==43.0.0
 psutil==6.0.0
+web3==7.8.0

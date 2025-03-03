@@ -21,6 +21,7 @@ class GlobalState:
             "txs": {},
             "intervals_timeouts": {}
         }
+        self.config = {}
         if (enabledb.lower() in ['true', 'yes', 'yeah', 'yup', 'certainly', 'sex']):
             self.enabledb = True
         else:
@@ -48,12 +49,13 @@ class GlobalState:
             if var in self.state:
                 print(f'cache call for {var}')
                 self.unlockvar(var, lockBypass)
-                return self.state['escrow'].get(var)
+                return self.state['escrow'].get(var, False)
             else:
                 self.state['escrow'][var] = self.database.retrieve_data_trade(var)
-        self.state['escrow'][var]['__last_access'] = int(time.time())
+        if var in self.state:
+            ['escrow'][var]['__last_access'] = int(time.time())
         self.unlockvar(var, lockBypass)
-        return self.state['escrow'].get(var)
+        return self.state['escrow'].get(var, False)
 
     def lockUser(self, user: str, lockBypass=False):
         self.state["lockmanager"][user] = True
@@ -309,6 +311,7 @@ class GlobalState:
             self.unlockvar(item_id, lockBypass)
             return self.state["items"][item_id]
         else:
+            self.unlockvar(item_id, lockBypass)
             return False
         
     def remove_item(self, item_id, lockBypass=False):
@@ -403,6 +406,26 @@ class GlobalState:
                     item['item_id'] = item.pop('id', None)
                 all_seller_items.append(item)
         return all_seller_items
+    
+    def load_config(self, file_name):
+        
+        try:
+            with open(os.path.join(os.getcwd(), file_name), "r", encoding="utf-8") as file:
+                self.config = json.load(file)
+        
+        except Exception as e:
+            print(f"Unexpected error while loading config: {e}")
+
+        return True
+    
+    def save_config(self, file_name):
+        
+        try:
+            file_path = os.path.join(os.getcwd(), file_name)
+            with open(file_path, "w", encoding="utf-8") as file:
+                json.dump(self.config, file, indent=4)
+        except Exception as e:
+            print(f"Unexpected error while saving config: {e}")
 
 def timeout_up(context, bot, bot_state: GlobalState):
     
@@ -478,45 +501,45 @@ def timeout_up(context, bot, bot_state: GlobalState):
         escrow_to_be_closed = []
         print('step4 of cleaner completed')
        
-        for escrow_id, escrow in base['escrow'].items():
-            if escrow['status'].startswith('close'):
-                keys_to_be_poped.append(escrow_id)
-            elif escrow['status'] == 'open' and (escrow['ourAddress'] not in base['wallet_checker_queue']) and (time.time()-escrow['__last_access']) > 60*60:
-                escrow_to_be_closed.append(escrow_id)
+        # for escrow_id, escrow in base['escrow'].items():
+        #     if escrow['status'].startswith('close'):
+        #         keys_to_be_poped.append(escrow_id)
+        #     elif escrow['status'] == 'open' and (escrow['ourAddress'] not in base['wallet_checker_queue']) and (time.time()-escrow['__last_access']) > 60*60:
+        #         escrow_to_be_closed.append(escrow_id)
         
-        for escrow_id in escrow_to_be_closed:
-            escrow = base['escrow'][escrow_id]
-            keys_to_be_poped.append(escrow_id)
-            close_trade(bot_state, escrow_id, 'close[inactivity]', True)
-            # try:
-            #     bot.send_message(
-            #         chat_id=escrow["buyer"], 
-            #         parse_mode=ParseMode.MARKDOWN,
-            #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
-            #     )
+        # for escrow_id in escrow_to_be_closed:
+        #     escrow = base['escrow'][escrow_id]
+        #     keys_to_be_poped.append(escrow_id)
+        #     close_trade(bot_state, escrow_id, 'close[inactivity]', True)
+        #     # try:
+        #     #     bot.send_message(
+        #     #         chat_id=escrow["buyer"], 
+        #     #         parse_mode=ParseMode.MARKDOWN,
+        #     #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
+        #     #     )
                 
-            # except TelegramError as e:
-            #     """"""
-            # try:
-            #     bot.send_message(
-            #         chat_id=escrow["seller"], 
-            #         parse_mode=ParseMode.MARKDOWN,
-            #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
-            #     )
+        #     # except TelegramError as e:
+        #     #     """"""
+        #     # try:
+        #     #     bot.send_message(
+        #     #         chat_id=escrow["seller"], 
+        #     #         parse_mode=ParseMode.MARKDOWN,
+        #     #         text=f"Escrow ID: `{escrow_id}`\nEscrow has been closed due to inactivity", 
+        #     #     )
                 
-            # except TelegramError as e:
-            #     """"""
+        #     # except TelegramError as e:
+        #     #     """"""
         
-        pop_list(keys_to_be_poped, base['escrow'])
+        # pop_list(keys_to_be_poped, base['escrow'])
         
-        keys_to_be_poped = []
+        # keys_to_be_poped = []
 
-        for action_id, wallet in base['wallets'].items():
-            if (int(time.time())-wallet['__time_added']) >= 20*60:
-                keys_to_be_poped.append(action_id)
+        # for action_id, wallet in base['wallets'].items():
+        #     if (int(time.time())-wallet['__time_added']) >= 20*60:
+        #         keys_to_be_poped.append(action_id)
         
-        pop_list(keys_to_be_poped, base['wallets'])
-        print('step5 of cleaner completed')
+        # pop_list(keys_to_be_poped, base['wallets'])
+        # print('step5 of cleaner completed')
         print('Cleaner Finished')
 
 
@@ -614,7 +637,6 @@ def timeout_up(context, bot, bot_state: GlobalState):
     print(f"\nMemory Usage: {memory_usage:.2f} MB")
     print(f"\nFreed Memory: {memory_usage_before-memory_usage:.2f} MB")
     print('-------------------------------------------------------------')
-
 
 def pop_list(poplist, dict_data):
     for key in poplist:

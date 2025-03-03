@@ -5,6 +5,10 @@ from telegram.ext import CallbackContext
 from globalState import GlobalState
 from imports.utils import *
 def execute(update: Update, context: CallbackContext, bot_state: GlobalState) -> None:
+
+    if not context.args:
+        update.message.reply_text("Please provide an item ID.\n /as <item_id>")
+        return
     user_input = context.args[0]
     item_details = bot_state.get_item_details(user_input)
     print(item_details)

@@ -13,12 +13,15 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
             text=f"You are currently locked"
         )
         return
+    
     if len(context.args)>0:
         user_input = update.message.text.strip().split(' ', 3)
     else:
         update.message.reply_text(
             "Usage: /edit <field> <item_id> <new_value>\n"
-            "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock"
+            "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock\n"
+            "Example: /edit shopname new_shop_name\n"
+            "Example: /edit itemprice ITEM095341922081 5"
         )
         return
     
@@ -27,14 +30,18 @@ def execute(update: Update, context: CallbackContext, bot_state: GlobalState) ->
         if len(user_input) < 2:
             update.message.reply_text(
                 "Usage: /edit <field> <item_id> <new_value>\n"
-                "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock"
+                "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock\n"
+                "Example: /edit shopname new_shop_name\n"
+                "Example: /edit itemprice ITEM095341922081 5"
             )
             return
         edit_shop(user_input, update, context, bot_state)
     elif len(user_input) < 3:
         update.message.reply_text(
             "Usage: /edit <field> <item_id> <new_value>\n"
-            "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock, itemwallet"
+            "Fields: shopname, shopdescription, itemprice, itemdescription, itemtype, itemstock, itemwallet\n"
+            "Example: /edit shopname new_shop_name\n"
+            "Example: /edit itemprice ITEM095341922081 5"
         )
         return
     else:
