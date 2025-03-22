@@ -421,7 +421,7 @@ def handle_input(update: Update, context: CallbackContext, bot_state: GlobalStat
                 [InlineKeyboardButton("USDT (Solana)", callback_data='option_12')],
                 [InlineKeyboardButton("BNB (BSC Bep-20)", callback_data='option_13')],
                 [InlineKeyboardButton("USDT (BSC Bep-20)", callback_data='option_14')],
-                # [InlineKeyboardButton("DOGE", callback_data='option_15')],
+                [InlineKeyboardButton("DOGE", callback_data='option_15')],
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             try:

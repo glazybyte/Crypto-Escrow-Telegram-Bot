@@ -13,11 +13,6 @@ def generateWallet(action_id: str, bot_state: GlobalState):
     if tradeDetails['currency'] == 'LTC':
         import imports.ltcwalletgen as m
         wallet = m.generate_litecoin_wallet();
-        wallet = {
-        'mnemonic': 'grow beauty pledge plunge search pigeon cluster tattoo torch bunker airport illness',
-        'private_key': '57411f07adfbb9f7a8da052b2a6c0ea9bf7c163af7ca78db48fdba3414eb0d2f',
-        'bech32_address': 'ltc1q89vatgyeww7m5cvy4znusrlfhdxwj5avz4zfky'
-    }
         bot_state.save_wallet_info(action_id, wallet['mnemonic'], wallet['private_key'], wallet['bech32_address'], 'LTC',inspect.getmodule(caller_frame[0]).__name__.split('.')[1])
         return wallet['bech32_address']
     elif tradeDetails['currency'] == 'SOL (Solana)' or tradeDetails['currency'] == 'USDT (Solana)':
@@ -28,7 +23,6 @@ def generateWallet(action_id: str, bot_state: GlobalState):
     elif tradeDetails['currency'] == 'BNB (BSC Bep-20)' or tradeDetails['currency'] == 'USDT (BSC Bep-20)':
         from imports.bscwalletgen import generate_bsc_wallet
         wallet = generate_bsc_wallet()
-        wallet = {"tradeId": "TRADE137892363424", "mnemonic": "cream mistake north draw abstract confirm catalog nerve seek canyon honey solution", "private_key": "58ef9bf7d87f942390eb7ec5d94a12022480bd0ace377a6d554b9664ea8283ba", "address": "0xBdd5Abf606d7Cb4fe5DC459F02023c8eF3F8EE50", "currency": "BSC", "tradeType": "escrow", "__time_added": 1740592120}
         bot_state.save_wallet_info(action_id, wallet['mnemonic'], wallet['private_key'], wallet['address'], 'BSC', inspect.getmodule(caller_frame[0]).__name__.split('.')[1])
         return wallet['address']
     elif tradeDetails['currency'] == 'DOGE':

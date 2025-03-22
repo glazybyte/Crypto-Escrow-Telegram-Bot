@@ -182,7 +182,7 @@ def send_ltc_transaction(ltc_address, ltc_private_key_hex, recipient_address, am
             fee += network_fee
         
         if tradeDetails["brokerTrade"]:
-            escrow_fee_satoshi = Decimal(tradeDetails["broker_fee"]) * Decimal('1e8')
+            broker_fee_satoshi = Decimal(tradeDetails["broker_fee"]) * Decimal('1e8')
             broker_fee_satoshi = int(Decimal(broker_fee_satoshi).quantize(Decimal('1'), rounding=ROUND_DOWN))
             fee += network_fee
 
@@ -191,7 +191,6 @@ def send_ltc_transaction(ltc_address, ltc_private_key_hex, recipient_address, am
         amount_to_send_satoshis = amount_to_send_satoshis - fee_satoshis - escrow_fee_satoshi - broker_fee_satoshi
 
         log_message(f"Sending {str(amount_to_send_satoshis)} Satoshi with fee of {str(fee_satoshis)}", log_file)
-        address_details = get_address_full(address=ltc_address, coin_symbol='ltc', api_key=api_token)
         utxos = get_unspent(ltc_address, api_token)
         if not utxos:
             print("No unspent outputs found for address:", ltc_address)
@@ -224,14 +223,11 @@ def send_ltc_transaction(ltc_address, ltc_private_key_hex, recipient_address, am
         
         outputs = []
         if Decimal(tradeDetails['fee'])>0:
-            print(1)
             outputs.append({'scriptPubKey': address_to_segwit_scriptpubkey(escrow_fee_wallet_address), 'value': escrow_fee_satoshi})
         if Decimal(tradeDetails["broker_fee"])>0 and tradeDetails["brokerTrade"]:
-            print(2)
             outputs.append({'scriptPubKey': address_to_segwit_scriptpubkey(tradeDetails['brokerAddress']), 'value': broker_fee_satoshi})
         if change_amount_satoshis > 0:
-            amount_to_send += change_amount_satoshis
-        print(3)
+            amount_to_send_satoshis += change_amount_satoshis
         outputs.append({'scriptPubKey': address_to_segwit_scriptpubkey(recipient_address), 'value': amount_to_send_satoshis})
 
         raw_tx = create_raw_segwit_transaction([input_tx], outputs, version=1, locktime=0)

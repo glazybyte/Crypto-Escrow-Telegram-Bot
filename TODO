@@ -1,11 +1,21 @@
 #Feature
-Add BSC support (30% done)
-Unsure whether to add TON or not given high fees than rest upto now
 Add ticket system for dispute purchases
 Add Bot moderator support to handle tickets (Will need to hold a upfront fee for them if they scam, also will need to redesign transaction structure to include their share after assistance)
 
+Admin Commands
+Command	Description
+/setfee <percent>	            Set escrow fee percentage
+/ban <user_id> <reason>         Ban a user from using escrow services
+/unban <user_id> <reason>       Unban a user
+/broadcast <message>            Send a message to all users
+/refund <trade_id> <reason>     Refund escrow funds
 
-#Dev level
+add TON network
+add TRON network
+add USDC support
+
+#Dev level  
 globalState.py, tx_interval_checker are little messy
-Add universal command handler that distribute commands after basic processing
 add use for enabled, hidden, OperaterCommand in command modules
+
+

@@ -9,16 +9,18 @@ Try the bot at: [Here](https://t.me/Escrow_shield_bot)
 
 ## Features
 
-- **Escrow Service:** Users can use the `/escrow` command, and the bot will generate a wallet to receive funds for the transaction. The funds are held until both parties confirm they are satisfied with the exchange.
+- **Escrow Service:** Users can start escrow service and the bot will generate a wallet to receive funds for the transaction. The funds are held until both parties confirm they are satisfied with the exchange. No manual intervention is required to release or hold the funds.
 
-- **Shop Setup:** Sellers can set up shop items with either automatic or manual key/product delivery systems. Funds are automatically released to the seller upon successful delivery.
+- **Shop Setup:** Sellers can set up shop items with either automatic or manual key/product delivery system. Funds are automatically released to the seller upon successful delivery.
 
-- **Wallet Security:** Crypto wallets are generated and stored in a MySQL database in an encrypted state. No external services are required to manage wallets.
+- **Broker Service:** Brokers can start a trade which will give them the agreed portion of the trade. In this process identity of seller and buyer remain anonymous to one another and only broker knows them.
+
+- **Wallet Security:** Crypto wallets are generated and stored in a MySQL database in an encrypted state. No external services are used to manage the wallets.
 
 - **Supported Networks:**
    - Solana
    - Litecoin
-   - Dogecoin (disabled currently)
+   - Dogecoin
    - BSC (BEP-20)
 
 - **Planned Networks:**
@@ -65,7 +67,8 @@ Needs [Python version 3.9.8](https://www.python.org/downloads/release/python-398
    BOT_TOKEN = '73777777:jFc4Tvs0bM' # Get this from Bot Father
    BLOCK_CYPHER_API_TOKEN = '' # Free one works just fine | Will be used to push DOGE and LTC transactions
    PRIVATE_KEY = 'not_set'
-   SOLANA_FEE_PAYER_SECRET = 'not_set' #used to pay tx fee for USDT, receives 2% of amount in turn
+   SOLANA_FEE_PAYER_SECRET = 'not_set' #used to pay tx fee for USDT on SOLANA network
+   BSC_FEE_PAYER_SECRET = 'not_set' #used to pay tx fee for USDT on BSC network
    ```
    Add Mysql Database Credentials
    ```Python
