@@ -46,7 +46,7 @@ async def main():
             wallet = generate_bsc_wallet()
             set_key('.env', 'BSC_FEE_PAYER_SECRET', wallet['private_key'])
             load_dotenv(override=True)
-            print(f"BSC_FEE_PAYER_SECRET updated to: \n{os.getenv('BSC_FEE_PAYER_SECRET')}\n Menmonic: {wallet['mnemonic']}\n SecretKey: {wallet['private_key']}\n Public Key: {wallet['public_address']}\nSECURELY SAVE THIS SOMEWHERE ELSE")
+            print(f"BSC_FEE_PAYER_SECRET updated to: \n{os.getenv('BSC_FEE_PAYER_SECRET')}\n Menmonic: {wallet['mnemonic']}\n SecretKey: {wallet['private_key']}\n Public Key: {wallet['address']}\nSECURELY SAVE THIS SOMEWHERE ELSE")
 
         bot_state = GlobalState(os.getenv('ENABLEDB'), os.getenv('HOST'), int(os.getenv('PORT')), os.getenv('USER'), os.getenv('PASSWORD'), os.getenv('DATABASE'))
         updater = Updater(os.getenv('BOT_TOKEN'), use_context=True)
