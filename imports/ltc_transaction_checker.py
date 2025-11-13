@@ -71,9 +71,3 @@ def ltcTransactionChecker(publicKey):
             },
             ""
         ]
-count = 1
-while True:
-
-    print(ltcTransactionChecker('LfrYjxKC9PP1rPzsAkZKf8RHbkifpnu6aw'))
-    print(f"TOTAL CHECK TIMES: {count}")
-    count +=1
