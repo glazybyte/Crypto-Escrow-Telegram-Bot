@@ -1,31 +1,79 @@
 import requests
 def ltcTransactionChecker(publicKey):
-    url = f"https://api.blockcypher.com/v1/ltc/main/addrs/{publicKey}/full"
+    url = f"https://litecoinspace.org/api/address/{publicKey}/txs"
 
     try:
-        response = requests.get(url)
+        response = requests.get(url, timeout=10)
         if response.status_code == 200:
-            data = response.json()
-            if 'txs' in data and len(data['txs']) > 0:
-                latest_transaction = data['txs'][0]
-                outputs = latest_transaction.get('outputs', [])
+            txs = response.json()
+
+            if isinstance(txs, list) and len(txs) > 0:
+                latest_tx = txs[0]
+                vouts = latest_tx.get('vout', [])
                 amount_received = 0
-                for output in outputs:
-                    if publicKey in output.get('addresses', []):
-                        amount_received = output.get('value', 0)
+
+                # Find outputs belonging to this address
+                for vout in vouts:
+                    if vout.get('scriptpubkey_address') == publicKey:
+                        amount_received = vout.get('value', 0)  # in satoshis
                         amount_received_ltc = amount_received / 1e8
                         break
+
                 if amount_received > 0:
-                    if latest_transaction.get('confirmations') >= 3:
-                        hash = latest_transaction['hash']
-                        return [{"code": "confirmed", "amount": amount_received_ltc , "publicKey": publicKey}, f"https://blockchair.com/litecoin/transaction/{hash}"]
+                    status = latest_tx.get('status', {})
+                    confirmed = status.get('confirmed', False)
+                    txid = latest_tx.get('txid', '')
+
+                    if confirmed:
+                        return [
+                            {
+                                "code": "confirmed",
+                                "amount": amount_received_ltc,
+                                "publicKey": publicKey
+                            },
+                            f"https://litecoinspace.org/tx/{txid}"
+                        ]
                     else:
-                        return [{"code": "unconfirmed", "amount": amount_received_ltc , "publicKey": publicKey}, f""]
+                        return [
+                            {
+                                "code": "unconfirmed",
+                                "amount": amount_received_ltc,
+                                "publicKey": publicKey
+                            },
+                            ""
+                        ]
                 else:
-                    return [{"code": "undetected", "publicKey": publicKey}, f""]
+                    return [
+                        {"code": "undetected", "publicKey": publicKey},
+                        ""
+                    ]
             else:
-                return [{"code": "undetected" , "publicKey": publicKey}, f""]
+                return [
+                    {"code": "undetected", "publicKey": publicKey},
+                    ""
+                ]
         else:
-            return [{"code": "error", "message": f"Failed to retrieve data. Status code: {response.status_code}" , "publicKey": publicKey}, f""]
+            return [
+                {
+                    "code": "error",
+                    "message": f"Failed to retrieve data. Status code: {response.status_code}",
+                    "publicKey": publicKey
+                },
+                ""
+            ]
+
     except Exception as e:
-        return [{"code": "error", "message": f"An error occurred: {e}" , "publicKey": publicKey}, f""]
+        return [
+            {
+                "code": "error",
+                "message": f"An error occurred: {e}",
+                "publicKey": publicKey
+            },
+            ""
+        ]
+count = 1
+while True:
+
+    print(ltcTransactionChecker('LfrYjxKC9PP1rPzsAkZKf8RHbkifpnu6aw'))
+    print(f"TOTAL CHECK TIMES: {count}")
+    count +=1
