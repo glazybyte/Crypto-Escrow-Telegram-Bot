@@ -1,5 +1,6 @@
-python-telegram-bot==13.7
-telegram==0.0.1
+python-telegram-bot[job-queue]==22.8
+setuptools<81.0.0
+pytz==2024.1
 requests==2.31.0
 base58==2.1.1
 bech32==1.2.0
