@@ -61,17 +61,17 @@ def is_number(input_string):
             # If conversion to Decimal fails, it's not a number
             return False
 
-def is_valid_user(input_value, context: CallbackContext):
+async def is_valid_user(input_value, context: CallbackContext):
     try:
         user_chat=''
         if input_value.isdigit():
-            user_chat = context.bot.get_chat(int(input_value))
+            user_chat = await context.bot.get_chat(int(input_value))
             if user_chat.type != 'private':
                 return False
         # else:
         #     if not input_value.startswith("@"):
         #         input_value = f"@{input_value}"
-        #     user_chat = context.bot.get_chat(input_value)
+        #     user_chat = await context.bot.get_chat(input_value)
         if hasattr(user_chat, "id"):
             return user_chat.id
         else:
